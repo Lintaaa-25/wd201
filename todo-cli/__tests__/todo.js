@@ -3,19 +3,35 @@ const todoList = require("../todo");
 const formattedDate = (d) => d.toISOString().split("T")[0];
 const today = new Date();
 const todayStr = formattedDate(today);
-const yesterdayStr = formattedDate(new Date(today.setDate(today.getDate() - 1)));
-const tomorrowStr = formattedDate(new Date(new Date().setDate(new Date().getDate() + 1)));
+const yesterdayStr = formattedDate(
+  new Date(today.setDate(today.getDate() - 1)),
+);
+const tomorrowStr = formattedDate(
+  new Date(new Date().setDate(new Date().getDate() + 1)),
+);
 
 describe("Todo List Test Suite", () => {
   let todos;
 
   beforeEach(() => {
     todos = todoList();
-    todos.add({ title: "Submit assignment", dueDate: yesterdayStr, completed: false });
+    todos.add({
+      title: "Submit assignment",
+      dueDate: yesterdayStr,
+      completed: false,
+    });
     todos.add({ title: "Pay rent", dueDate: todayStr, completed: true });
-    todos.add({ title: "Service Vehicle", dueDate: todayStr, completed: false });
+    todos.add({
+      title: "Service Vehicle",
+      dueDate: todayStr,
+      completed: false,
+    });
     todos.add({ title: "File taxes", dueDate: tomorrowStr, completed: false });
-    todos.add({ title: "Pay electric bill", dueDate: tomorrowStr, completed: false });
+    todos.add({
+      title: "Pay electric bill",
+      dueDate: tomorrowStr,
+      completed: false,
+    });
   });
 
   test("adds a new todo", () => {
