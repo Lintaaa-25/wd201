@@ -1,6 +1,11 @@
 const todoList = () => {
   let all = [];
 
+  // Move these INSIDE the function
+  const formattedDate = (d) => d.toISOString().split("T")[0];
+  const dateToday = new Date();
+  const today = formattedDate(dateToday);
+
   const add = (todoItem) => {
     all.push(todoItem);
   };
