@@ -24,7 +24,7 @@ const todoList = () => {
   const toDisplayableList = (list) => {
     return list
       .map((todo) => {
-        const checkbox = todo.completed ? "[X]" : "[ ]";
+        const checkbox = todo.completed ? "[x]" : "[ ]";
         const dateDisplay = todo.dueDate === today ? "" : ` ${todo.dueDate}`;
         return `${checkbox} ${todo.title}${dateDisplay}`;
       })
@@ -60,7 +60,7 @@ const tomorrow = formattedDate(
 
 todos.add({ title: 'Submit assignment', dueDate: yesterday, completed: false });
 todos.add({ title: 'Pay rent', dueDate: today, completed: true });
-todos.add({ title: 'Service vehicle', dueDate: today, completed: false });
+todos.add({ title: 'Service Vehicle', dueDate: today, completed: false });
 todos.add({ title: 'File taxes', dueDate: tomorrow, completed: false });
 todos.add({ title: 'Pay electric bill', dueDate: tomorrow, completed: false })
 
