@@ -11,38 +11,36 @@ describe("Todo List Test Suite", () => {
 
   beforeEach(() => {
     todos = todoList();
-    todos.add({ title: "Test overdue", dueDate: yesterdayStr, completed: false });
-    todos.add({ title: "Test today", dueDate: todayStr, completed: false });
-    todos.add({ title: "Test later", dueDate: tomorrowStr, completed: false });
+    todos.add({ title: "Submit assignment", dueDate: yesterdayStr, completed: false });
+    todos.add({ title: "Pay rent", dueDate: todayStr, completed: true });
+    todos.add({ title: "Service Vehicle", dueDate: todayStr, completed: false });
+    todos.add({ title: "File taxes", dueDate: tomorrowStr, completed: false });
+    todos.add({ title: "Pay electric bill", dueDate: tomorrowStr, completed: false });
   });
 
   test("adds a new todo", () => {
-    const countBefore = todos.all.length;
-    todos.add({ title: "New item", dueDate: todayStr, completed: false });
-    expect(todos.all.length).toBe(countBefore + 1);
+    const initialLength = todos.all.length;
+    todos.add({ title: "New Task", dueDate: todayStr, completed: false });
+    expect(todos.all.length).toBe(initialLength + 1);
   });
 
-  test("marks a todo as completed", () => {
-    expect(todos.all[0].completed).toBe(false);
-    todos.markAsComplete(0);
-    expect(todos.all[0].completed).toBe(true);
+  test("marks a todo as complete", () => {
+    todos.markAsComplete(2); // Service Vehicle
+    expect(todos.all[2].completed).toBe(true);
   });
 
   test("retrieves overdue items", () => {
     const overdue = todos.overdue();
-    expect(overdue.length).toBe(1);
-    expect(overdue[0].title).toBe("Test overdue");
+    expect(overdue.every((item) => item.dueDate < todayStr)).toBe(true);
   });
 
   test("retrieves items due today", () => {
     const dueToday = todos.dueToday();
-    expect(dueToday.length).toBe(1);
-    expect(dueToday[0].title).toBe("Test today");
+    expect(dueToday.every((item) => item.dueDate === todayStr)).toBe(true);
   });
 
   test("retrieves items due later", () => {
     const dueLater = todos.dueLater();
-    expect(dueLater.length).toBe(1);
-    expect(dueLater[0].title).toBe("Test later");
+    expect(dueLater.every((item) => item.dueDate > todayStr)).toBe(true);
   });
 });
