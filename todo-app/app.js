@@ -28,6 +28,17 @@ app.get("/todos/:id", async function (request, response) {
     return response.status(422).json(error);
   }
 });
+app.get("/", (req, res) => {
+  const todos = [
+    { title: "Learn EJS", completed: true },
+    { title: "Deploy App", completed: false }
+  ];
+  res.render("index", { todos });
+});
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 
 app.post("/todos", async function (request, response) {
   try {
@@ -49,6 +60,7 @@ app.put("/todos/:id/markAsCompleted", async function (request, response) {
     return response.status(422).json(error);
   }
 });
+app.use(express.static(path.join(__dirname, "public")));
 
 app.delete("/todos/:id", async function (request, response) {
   console.log("We have to delete a Todo with ID: ", request.params.id);
