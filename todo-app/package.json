@@ -3,14 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon -e js, ejs",
+    "start:prod": "node index.js",
     "test": "jest",
     "prepare": "husky"
   },
   "keywords": [],
   "author": "linta <lintababu3@gmail.com>",
   "license": "ISC",
-  "description": "",
   "dependencies": {
+    "ejs": "^3.1.10",
     "express": "^5.1.0",
     "pg": "^8.15.5",
     "pg-hstore": "^2.3.4",
@@ -19,7 +21,8 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "jest": "^29.7.0",
+    "nodemon": "^3.1.10",
     "supertest": "^7.1.0"
   },
-   "description": ""
+  "description": ""
 }
