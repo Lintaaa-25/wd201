@@ -1,0 +1,13 @@
+<table border="1">
+    <tr>
+      <th>Title</th>
+      <th>Status</th>
+    </tr>
+    <% todos.forEach(todo => { %>
+      <tr>
+        <td><%= todo.title %></td>
+        <td><%= todo.completed ? 'Done' : 'Pending' %></td>
+      </tr>
+    <% }) %>
+  </table>
+  
