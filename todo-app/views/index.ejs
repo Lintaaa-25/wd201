@@ -1,61 +1,84 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Todo Application</title>
-</head>
-<body>
-  <div class="grid grid-cols-6">
-    <div class="col-start-2 col-span-4">
-      <%- include('header') %>
+<section class="my-4">
+  <h5>Overdue (<span id="count-overdue"><%= overdue.length %></span>)</h5>
+  <table class="table-auto w-full" id="overdue-section">
+    <% overdue.forEach(todo => { %>
+      <tr class="Todo-Item" id="todo-<%= todo.id %>">
+        <td>
+          <input type="checkbox" class="todo-checkbox" id="check-<%= todo.id %>" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>" <%= todo.completed ? 'checked' : '' %> >
+        </td>
+        <td>
+          <label for="check-<%= todo.id %>"><%= todo.title %></label>
+        </td>
+        <td>
+          <button class="delete-button text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">
+            🗑️ Delete
+          </button>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
 
-      <form id="todo-form" class="flex flex-col gap-2 my-4">
-        <input type="text" name="title" id="title" placeholder="Enter title" required class="border border-gray-400 p-2 rounded">
-        <input type="date" name="dueDate" id="dueDate" required class="border border-gray-400 p-2 rounded">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-        <button type="submit" id="submit" class="bg-green-600 text-white py-2 px-4 rounded">Add Todo</button>
-      </form>
+  <h5>Due Today (<span id="count-due-today"><%= dueToday.length %></span>)</h5>
+  <table class="table-auto w-full" id="today-section">
+    <% dueToday.forEach(todo => { %>
+      <tr class="Todo-Item" id="todo-<%= todo.id %>">
+        <td>
+          <input type="checkbox" class="todo-checkbox" id="check-<%= todo.id %>" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>" <%= todo.completed ? 'checked' : '' %> >
+        </td>
+        <td>
+          <label for="check-<%= todo.id %>"><%= todo.title %></label>
+        </td>
+        <td>
+          <button class="delete-button text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">
+            🗑️ Delete
+          </button>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
 
-      <%- include('todos', { overdue, dueToday, dueLater, completed, csrfToken }) %>
+  <h5>Due Later (<span id="count-due-later"><%= dueLater.length %></span>)</h5>
+  <table class="table-auto w-full" id="later-section">
+    <% dueLater.forEach(todo => { %>
+      <tr class="Todo-Item" id="todo-<%= todo.id %>">
+        <td>
+          <input type="checkbox" class="todo-checkbox" id="check-<%= todo.id %>" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>" <%= todo.completed ? 'checked' : '' %> >
+        </td>
+        <td>
+          <label for="check-<%= todo.id %>"><%= todo.title %></label>
+        </td>
+        <td>
+          <button class="delete-button text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">
+            🗑️ Delete
+          </button>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
 
-      <%- include('footer') %>
-    </div>
-  </div>
+  <h5>Completed (<span id="count-completed"><%= completed.length %></span>)</h5>
+  <table class="table-auto w-full" id="completed-section">
+    <% completed.forEach(todo => { %>
+      <tr class="Todo-Item" id="todo-<%= todo.id %>">
+        <td>
+          <input type="checkbox" class="todo-checkbox" id="check-<%= todo.id %>" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>" checked>
+        </td>
+        <td>
+          <label for="check-<%= todo.id %>"><%= todo.title %></label>
+        </td>
+        <td>
+          <button class="delete-button text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">
+            🗑️ Delete
+          </button>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+</section>
 
-  <script>
-    async function addTodo(event) {
-      event.preventDefault();
-      const title = document.getElementById('title').value.trim();
-      const dueDate = document.getElementById('dueDate').value;
-      const csrfToken = document.querySelector('input[name="_csrf"]').value;
-
-      if (!title || !dueDate) {
-        alert('Both Title and Due Date are required!');
-        return;
-      }
-
-      const response = await fetch("/todos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "CSRF-Token": csrfToken,
-        },
-        body: JSON.stringify({ title, dueDate }),
-      });
-
-      if (response.ok) {
-        location.reload();
-      } else {
-        const message = await response.text();
-        alert(message);
-      }
-    }
-
-    document.getElementById("todo-form").addEventListener("submit", addTodo);
-  </script>
-
-  <script src="/script.js"></script>
-</body>
-</html>
+<!-- Add Todo Form -->
+<form action="/todos" method="POST" id="add-todo-form">
+  <input type="text" name="title" id="todo-title" placeholder="Enter todo title" required>
+  <input type="date" name="dueDate" id="todo-due-date" required>
+  <button type="submit">Add Todo</button>
+</form>
