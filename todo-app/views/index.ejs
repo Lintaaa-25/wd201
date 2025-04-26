@@ -2,13 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Todo Application</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Todo Application</title>
 </head>
-<body>
-  <%- include('header') %>
+<body class="bg-gray-100">
+  <div class="grid grid-cols-6">
+    <div class="col-start-3 col-span-2 bg-white p-6 rounded shadow-md">
+      
+      <%- include('header') %>
 
-  <%- include('todos', { todos: todos }) %>
+      <form action="/todos" method="POST" class="flex items-center my-4 space-x-2">
+        <input type="text" name="title" placeholder="What's next?" required class="border border-gray-300 rounded p-2 w-full" />
+        <input type="date" name="dueDate" required class="border border-gray-300 rounded p-2" />
+        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Add</button>
+      </form>
 
-  <%- include('footer') %>
+      <%- include('todos', { overdue, dueToday, dueLater }) %>
+
+    </div>
+  </div>
 </body>
 </html>
