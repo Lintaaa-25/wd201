@@ -1,24 +1,24 @@
 const express = require('express');
-const app = express();
 const path = require('path');
 const { Todo } = require('./models');
 const bodyParser = require('body-parser');
 const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
+const app = express();
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 const csrfProtection = csrf({ cookie: true });
 
-// Homepage - Load Todos
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Home page
 app.get('/', csrfProtection, async (req, res) => {
   const todos = await Todo.findAll({ order: [['dueDate', 'ASC']] });
-
   const today = new Date().toISOString().split('T')[0];
 
   const overdue = todos.filter(todo => todo.dueDate < today && !todo.completed);
@@ -29,22 +29,17 @@ app.get('/', csrfProtection, async (req, res) => {
   res.render('index', { overdue, dueToday, dueLater, completed, csrfToken: req.csrfToken() });
 });
 
-// Create new Todo
+// Create todo
 app.post('/todos', csrfProtection, async (req, res) => {
-  try {
-    const { title, dueDate } = req.body;
-    if (!title.trim() || !dueDate) {
-      return res.status(400).send('Title and Due Date are required');
-    }
-    await Todo.create({ title, dueDate, completed: false });
-    res.redirect('/');
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error creating todo');
+  const { title, dueDate } = req.body;
+  if (!title.trim() || !dueDate) {
+    return res.status(400).send('Title and Due Date are required');
   }
+  await Todo.create({ title, dueDate, completed: false });
+  res.redirect('/');
 });
 
-// Update Completion Status
+// Update todo completion
 app.put('/todos/:id', csrfProtection, async (req, res) => {
   const todo = await Todo.findByPk(req.params.id);
   if (todo) {
@@ -54,7 +49,7 @@ app.put('/todos/:id', csrfProtection, async (req, res) => {
   res.status(404).send();
 });
 
-// Delete a Todo
+// Delete todo
 app.delete('/todos/:id', csrfProtection, async (req, res) => {
   const deleted = await Todo.destroy({ where: { id: req.params.id } });
   if (deleted) {
