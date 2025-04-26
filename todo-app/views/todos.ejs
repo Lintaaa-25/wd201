@@ -1,22 +1,52 @@
 <section class="my-4">
   <h5>Overdue (<span id="count-overdue"><%= overdue.length %></span>)</h5>
-  <table class="table-auto w-full">
+  <table class="table-auto w-full" id="overdue-section">
     <% overdue.forEach(todo => { %>
-      <tr class="Todo-Item group">
+      <tr class="Todo-Item group" id="todo-<%= todo.id %>">
         <td>
-          <input type="checkbox" class="todo-checkbox" id="todo-<%= todo.id %>" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">
+          <input type="checkbox" class="todo-checkbox" id="check-<%= todo.id %>" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">
         </td>
         <td>
-          <label for="todo-<%= todo.id %>"><%= todo.title %></label>
+          <label for="check-<%= todo.id %>"><%= todo.title %></label>
         </td>
         <td>
-          <button class="delete-button hidden group-hover:inline-block text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">
-            🗑️
-          </button>
+          <button class="delete-button hidden group-hover:inline-block text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">🗑️</button>
         </td>
       </tr>
     <% }) %>
   </table>
 
-  <!-- Repeat similarly for Due Today, Due Later, Completed with same structure -->
+  <h5>Due Today (<span id="count-due-today"><%= dueToday.length %></span>)</h5>
+  <table class="table-auto w-full" id="today-section">
+    <% dueToday.forEach(todo => { %>
+      <tr class="Todo-Item group" id="todo-<%= todo.id %>">
+        <td>
+          <input type="checkbox" class="todo-checkbox" id="check-<%= todo.id %>" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">
+        </td>
+        <td>
+          <label for="check-<%= todo.id %>"><%= todo.title %></label>
+        </td>
+        <td>
+          <button class="delete-button hidden group-hover:inline-block text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">🗑️</button>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
+
+  <h5>Due Later (<span id="count-due-later"><%= dueLater.length %></span>)</h5>
+  <table class="table-auto w-full" id="later-section">
+    <% dueLater.forEach(todo => { %>
+      <tr class="Todo-Item group" id="todo-<%= todo.id %>">
+        <td>
+          <input type="checkbox" class="todo-checkbox" id="check-<%= todo.id %>" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">
+        </td>
+        <td>
+          <label for="check-<%= todo.id %>"><%= todo.title %></label>
+        </td>
+        <td>
+          <button class="delete-button hidden group-hover:inline-block text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">🗑️</button>
+        </td>
+      </tr>
+    <% }) %>
+  </table>
 </section>
