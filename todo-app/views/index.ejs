@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Todo App</title>
   <meta name="csrf-token" content="<%= csrfToken %>">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <header>
@@ -77,34 +78,10 @@
     </ul>
   </section>
 
-  <table border="1">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Due Date</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="todo-table-body">
-      <% [...overdue, ...dueToday, ...dueLater, ...completed].forEach(todo => { %>
-        <tr>
-          <td><%= todo.title %></td>
-          <td><%= todo.dueDate %></td>
-          <td><%= todo.completed ? "Completed" : "Pending" %></td>
-          <td>
-            <button onclick="updateTodo(<%= todo.id %>)"><%= todo.completed ? "Undo" : "Complete" %></button>
-            <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
-
   <footer>
     <p>Todo Application Footer</p>
   </footer>
 
-  <script src="/script.js"></script>
+  <script src="/index.js"></script>
 </body>
 </html>
