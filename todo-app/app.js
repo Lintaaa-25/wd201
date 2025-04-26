@@ -16,7 +16,7 @@ const csrfProtection = csrf({ cookie: true });
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Home page
+// Home Page
 app.get('/', csrfProtection, async (req, res) => {
   const todos = await Todo.findAll({ order: [['dueDate', 'ASC']] });
   const today = new Date().toISOString().split('T')[0];
@@ -29,20 +29,17 @@ app.get('/', csrfProtection, async (req, res) => {
   res.render('index', { overdue, dueToday, dueLater, completed, csrfToken: req.csrfToken() });
 });
 
-// Create todo
+// Create Todo
 app.post('/todos', csrfProtection, async (req, res) => {
   const { title, dueDate } = req.body;
-  if (!title || title.trim().length === 0) {
-    return res.status(400).send('Title cannot be empty');
-  }
-  if (!dueDate) {
-    return res.status(400).send('Due Date cannot be empty');
+  if (!title || title.trim() === '' || !dueDate) {
+    return res.status(400).send('Title and Due Date are required');
   }
   await Todo.create({ title: title.trim(), dueDate, completed: false });
   res.redirect('/');
 });
 
-// Update todo completion
+// Update Completion Status
 app.put('/todos/:id', csrfProtection, async (req, res) => {
   const todo = await Todo.findByPk(req.params.id);
   if (todo) {
@@ -52,7 +49,7 @@ app.put('/todos/:id', csrfProtection, async (req, res) => {
   res.status(404).send();
 });
 
-// Delete todo
+// Delete Todo
 app.delete('/todos/:id', csrfProtection, async (req, res) => {
   const deleted = await Todo.destroy({ where: { id: req.params.id } });
   if (deleted) {
