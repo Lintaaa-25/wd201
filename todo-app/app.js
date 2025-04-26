@@ -32,10 +32,13 @@ app.get('/', csrfProtection, async (req, res) => {
 // Create todo
 app.post('/todos', csrfProtection, async (req, res) => {
   const { title, dueDate } = req.body;
-  if (!title.trim() || !dueDate) {
-    return res.status(400).send('Title and Due Date are required');
+  if (!title || title.trim().length === 0) {
+    return res.status(400).send('Title cannot be empty');
   }
-  await Todo.create({ title, dueDate, completed: false });
+  if (!dueDate) {
+    return res.status(400).send('Due Date cannot be empty');
+  }
+  await Todo.create({ title: title.trim(), dueDate, completed: false });
   res.redirect('/');
 });
 
