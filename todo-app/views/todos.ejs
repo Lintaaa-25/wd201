@@ -12,7 +12,7 @@
   </div>
 
   <!-- Due Today Section -->
-  <div>
+  <div class="mt-6">
     <h5>Due Today (<span id="count-due-today"><%= dueToday.length %></span>)</h5>
     <% dueToday.forEach(todo => { %>
       <div class="flex items-center space-x-2 mt-2">
@@ -23,7 +23,7 @@
   </div>
 
   <!-- Due Later Section -->
-  <div>
+  <div class="mt-6">
     <h5>Due Later (<span id="count-due-later"><%= dueLater.length %></span>)</h5>
     <% dueLater.forEach(todo => { %>
       <div class="flex items-center space-x-2 mt-2">
