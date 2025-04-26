@@ -3,76 +3,69 @@ const app = express();
 const bodyParser = require('body-parser');
 const csrf = require('tiny-csrf');
 const cookieParser = require('cookie-parser');
-const { Todo } = require('./models'); // Make sure this matches your model import
+const { Todo } = require('./models'); // Import Todo model
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser('supersecret'));
 app.use(csrf("x7p9kLz21HvTg8Nbm4ErQyWtFuAiVcMz", ["POST", "PUT", "DELETE"]));
-app.use(express.static('public'));
+app.use(express.static('public')); // Serve static files (CSS, JS, etc.)
 
-app.set('view engine', 'ejs');
+app.set('view engine', 'ejs'); // Use EJS for rendering views
 
 const today = new Date().toISOString().split('T')[0];
 
+// Render the homepage with the todos
 app.get('/', async (req, res) => {
-  const todos = await Todo.getTodos(); // Fetch todos from the database
+  const todos = await Todo.findAll();
   const overdue = todos.filter(todo => todo.dueDate < today && !todo.completed);
   const dueToday = todos.filter(todo => todo.dueDate === today && !todo.completed);
   const dueLater = todos.filter(todo => todo.dueDate > today && !todo.completed);
   const completed = todos.filter(todo => todo.completed);
 
-  res.render('index', { 
-    overdue, 
-    dueToday, 
-    dueLater, 
-    completed, 
-    csrfToken: req.csrfToken() 
-  });
+  res.render('index', { overdue, dueToday, dueLater, completed, csrfToken: req.csrfToken() });
 });
 
+// Create a new todo
 app.post('/todos', async (req, res) => {
   if (!req.body.title || !req.body.dueDate) {
     return res.status(400).send('Title and DueDate are required');
   }
-  
-  // Ensure the date format is correct
-  const dueDate = new Date(req.body.dueDate);
-  if (isNaN(dueDate.getTime())) {
-    return res.status(400).send('Invalid due date');
-  }
-
-  await Todo.createTodo({ 
-    title: req.body.title, 
-    dueDate: req.body.dueDate, 
-    completed: false 
+  await Todo.create({
+    title: req.body.title,
+    dueDate: req.body.dueDate,
+    completed: false
   });
-  
   res.redirect('/');
 });
 
+// Mark a todo as completed (toggle completion)
 app.put('/todos/:id', async (req, res) => {
   const todo = await Todo.findByPk(req.params.id);
-  if (todo) {
-    await todo.update({ completed: !todo.completed });
-    res.json(todo);
-  } else {
-    res.status(404).send('Todo not found');
-  }
+  await todo.update({ completed: !todo.completed });
+  res.json(todo);
 });
 
+// Delete a todo
 app.delete('/todos/:id', async (req, res) => {
   try {
-    await Todo.remove(req.params.id); // Assuming this function removes a todo by its ID
+    await Todo.destroy({
+      where: { id: req.params.id }
+    });
     return res.json({ success: true });
   } catch (error) {
     return res.status(422).json(error);
   }
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// Sync the database and start the server
+const sequelize = require('./db'); // Import DB connection
+
+sequelize.sync().then(() => {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
 });
 
 module.exports = app;
