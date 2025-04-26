@@ -2,7 +2,8 @@
 
   <!-- Overdue Section -->
   <div>
-    <h5>Overdue (<span id="count-overdue"><%= overdue.length %></span>)</h5>
+    <h5>Overdue</h5>
+    <div id="count-overdue">(<%= overdue.length %>)</div>
     <% overdue.forEach(todo => { %>
       <div class="flex items-center space-x-2 mt-2">
         <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 rounded">
@@ -13,7 +14,8 @@
 
   <!-- Due Today Section -->
   <div class="mt-6">
-    <h5>Due Today (<span id="count-due-today"><%= dueToday.length %></span>)</h5>
+    <h5>Due Today</h5>
+    <div id="count-due-today">(<%= dueToday.length %>)</div>
     <% dueToday.forEach(todo => { %>
       <div class="flex items-center space-x-2 mt-2">
         <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 rounded">
@@ -24,7 +26,8 @@
 
   <!-- Due Later Section -->
   <div class="mt-6">
-    <h5>Due Later (<span id="count-due-later"><%= dueLater.length %></span>)</h5>
+    <h5>Due Later</h5>
+    <div id="count-due-later">(<%= dueLater.length %>)</div>
     <% dueLater.forEach(todo => { %>
       <div class="flex items-center space-x-2 mt-2">
         <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 rounded">
