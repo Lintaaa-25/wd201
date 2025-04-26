@@ -1,39 +1,33 @@
-<section class="space-y-6">
+<section class="my-4">
+  <h5>Overdue (<span id="count-overdue"><%= overdue.length %></span>)</h5>
+  <% overdue.forEach(todo => { %>
+    <div class="Todo-Item">
+      <input id="todo-checkbox-<%= todo.id %>" type="checkbox" />
+      <label for="todo-checkbox-<%= todo.id %>"><%= todo.title %></label>
+    </div>
+  <% }) %>
 
-  <!-- Overdue Section -->
-  <div>
-    <h5>Overdue</h5>
-    <div id="count-overdue">(<%= overdue.length %>)</div>
-    <% overdue.forEach(todo => { %>
-      <div class="flex items-center space-x-2 mt-2">
-        <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 rounded">
-        <label for="todo-<%= todo.id %>" class="text-gray-700"><%= todo.title %></label>
-      </div>
-    <% }) %>
-  </div>
+  <h5>Due Today (<span id="count-due-today"><%= dueToday.length %></span>)</h5>
+  <% dueToday.forEach(todo => { %>
+    <div class="Todo-Item">
+      <input id="todo-checkbox-<%= todo.id %>" type="checkbox" />
+      <label for="todo-checkbox-<%= todo.id %>"><%= todo.title %></label>
+    </div>
+  <% }) %>
 
-  <!-- Due Today Section -->
-  <div class="mt-6">
-    <h5>Due Today</h5>
-    <div id="count-due-today">(<%= dueToday.length %>)</div>
-    <% dueToday.forEach(todo => { %>
-      <div class="flex items-center space-x-2 mt-2">
-        <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 rounded">
-        <label for="todo-<%= todo.id %>" class="text-gray-700"><%= todo.title %></label>
-      </div>
-    <% }) %>
-  </div>
+  <h5>Due Later (<span id="count-due-later"><%= dueLater.length %></span>)</h5>
+  <% dueLater.forEach(todo => { %>
+    <div class="Todo-Item">
+      <input id="todo-checkbox-<%= todo.id %>" type="checkbox" />
+      <label for="todo-checkbox-<%= todo.id %>"><%= todo.title %></label>
+    </div>
+  <% }) %>
 
-  <!-- Due Later Section -->
-  <div class="mt-6">
-    <h5>Due Later</h5>
-    <div id="count-due-later">(<%= dueLater.length %>)</div>
-    <% dueLater.forEach(todo => { %>
-      <div class="flex items-center space-x-2 mt-2">
-        <input type="checkbox" id="todo-<%= todo.id %>" class="w-4 h-4 text-blue-600 rounded">
-        <label for="todo-<%= todo.id %>" class="text-gray-700"><%= todo.title %></label>
-      </div>
-    <% }) %>
-  </div>
-
+  <h5>Completed Items (<span id="count-completed"><%= completed.length %></span>)</h5>
+  <% completed.forEach(todo => { %>
+    <div class="Todo-Item">
+      <input id="todo-checkbox-<%= todo.id %>" type="checkbox" checked disabled />
+      <label for="todo-checkbox-<%= todo.id %>"><%= todo.title %></label>
+    </div>
+  <% }) %>
 </section>
