@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // For updating checkbox status
   document.querySelectorAll('.todo-checkbox').forEach(checkbox => {
     checkbox.addEventListener('change', async (e) => {
       const todoId = e.target.dataset.id;
@@ -13,10 +14,11 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         body: JSON.stringify({ completed })
       });
-      window.location.reload();
+      location.reload();
     });
   });
 
+  // For deleting todos
   document.querySelectorAll('.delete-button').forEach(button => {
     button.addEventListener('click', async (e) => {
       const todoId = e.target.dataset.id;
@@ -31,10 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       if (response.ok) {
-        const todoRow = document.getElementById(`todo-${todoId}`);
-        todoRow.remove();
+        document.getElementById(`todo-${todoId}`).remove(); // Remove todo item from page
       } else {
-        alert('Failed to delete Todo');
+        alert('Failed to delete the todo item.');
       }
     });
   });
