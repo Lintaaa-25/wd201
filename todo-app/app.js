@@ -8,7 +8,7 @@ const { Todo } = require('./models');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser('supersecret'));
-app.use(csrf('A32CharacterLongSuperSecretKeyHere12345678', ['POST', 'PUT', 'DELETE']));
+app.use(csrf("x7p9kLz21HvTg8Nbm4ErQyWtFuAiVcMz", ["POST", "PUT", "DELETE"]));
 app.use(express.static('public'));
 
 app.set('view engine', 'ejs');
