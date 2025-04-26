@@ -1,86 +1,22 @@
-const express = require("express");
-const path = require("path"); 
+const express = require('express');
+const path = require('path');
 const app = express();
-const { Todo } = require("./models");
-const bodyParser = require("body-parser");
-app.use(bodyParser.json());
-
-app.get("/", function (request, response) {
-  response.send("Hello World");
-});
-
-app.get("/todos", async function (_request, response) {
-  console.log("Processing list of all Todos ...");
-  try {
-    const todos = await Todo.findAll(); // Get all todos from DB
-    return response.status(200).json(todos); // Send as response
-  } catch (error) {
-    console.error(error);
-    return response.status(500).json({ error: "Failed to fetch todos" });
-  }
-});
-
-app.get("/todos/:id", async function (request, response) {
-  try {
-    const todo = await Todo.findByPk(request.params.id);
-    return response.json(todo);
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
-});
-app.get("/", (req, res) => {
-  const todos = [
-    { title: "Learn EJS", completed: true },
-    { title: "Deploy App", completed: false }
-  ];
-  res.render("index", { todos });
-});
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(express.static('public'));
 
+const todos = [
+  { id: 1, title: 'Learn Node.js' },
+  { id: 2, title: 'Build a todo app' },
+  { id: 3, title: 'Deploy to Render' }
+];
 
-app.post("/todos", async function (request, response) {
-  try {
-    const todo = await Todo.addTodo(request.body);
-    return response.json(todo);
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
+app.get('/', (req, res) => {
+  res.render('index', { todos });
 });
 
-app.put("/todos/:id/markAsCompleted", async function (request, response) {
-  const todo = await Todo.findByPk(request.params.id);
-  try {
-    const updatedTodo = await todo.markAsCompleted();
-    return response.json(updatedTodo);
-  } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
-  }
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
-app.use(express.static(path.join(__dirname, "public")));
-
-app.delete("/todos/:id", async function (request, response) {
-  console.log("We have to delete a Todo with ID: ", request.params.id);
-  try {
-    const deleted = await Todo.destroy({
-      where: {
-        id: request.params.id,
-      },
-    });
-
-    if (deleted === 1) {
-      return response.json(true); // Deletion successful
-    } else {
-      return response.json(false); // No todo with this ID
-    }
-  } catch (error) {
-    console.error(error);
-    return response.status(500).json(false); // Internal error
-  }
-});
-
-module.exports = app;
