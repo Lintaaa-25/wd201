@@ -11,15 +11,15 @@
     <div class="col-start-3 col-span-2">
       <%- include('header') %>
 
-      <form action="/todos" method="POST" class="flex items-center my-2" id="todo-form">
+      <form action="/todos" method="POST" id="todo-form" class="flex items-center my-2">
         <div class="flex-auto">
-          <input type="text" name="title" placeholder="What's next?" required class="border border-gray-300 rounded p-1 w-full" />
+          <input type="text" name="title" id="title" placeholder="What's next?" required class="border border-gray-300 rounded p-1 w-full" />
         </div>
         <div class="flex-auto">
-          <input type="date" name="dueDate" required class="border border-gray-300 rounded text-gray-900 w-full p-1" />
+          <input type="date" name="dueDate" id="dueDate" required class="border border-gray-300 rounded text-gray-900 w-full p-1" />
         </div>
         <div class="flex-none">
-          <button type="submit" class="bg-green-600 text-white px-5 py-1.5 rounded font-semibold">Add</button>
+          <button type="submit" id="submit" class="bg-green-600 text-white px-5 py-1.5 rounded font-semibold">Add</button>
         </div>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       </form>
