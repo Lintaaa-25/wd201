@@ -4,24 +4,18 @@
   <meta charset="UTF-8">
   <script src="https://cdn.tailwindcss.com"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>To-Do Manager</title>
+  <title>Todo App</title>
 </head>
 <body>
   <div class="grid grid-cols-6">
-    <div class="col-start-3 col-span-2">
+    <div class="col-start-2 col-span-4">
       <%- include('header') %>
 
-      <form action="/todos" method="POST" id="todo-form" class="flex items-center my-2">
-        <div class="flex-auto">
-          <input type="text" name="title" id="title" placeholder="What's next?" required class="border border-gray-300 rounded p-1 w-full" />
-        </div>
-        <div class="flex-auto">
-          <input type="date" name="dueDate" id="dueDate" required class="border border-gray-300 rounded text-gray-900 w-full p-1" />
-        </div>
-        <div class="flex-none">
-          <button type="submit" id="submit" class="bg-green-600 text-white px-5 py-1.5 rounded font-semibold">Add</button>
-        </div>
+      <form action="/todos" method="POST" id="todo-form" onsubmit="return validateForm();" class="flex flex-col gap-2 my-4">
+        <input type="text" name="title" id="title" placeholder="Enter title" required class="border border-gray-400 p-2 rounded">
+        <input type="date" name="dueDate" id="dueDate" required class="border border-gray-400 p-2 rounded">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button type="submit" id="submit" class="bg-green-600 text-white py-2 px-4 rounded">Add Todo</button>
       </form>
 
       <%- include('todos', { overdue, dueToday, dueLater, completed, csrfToken }) %>
@@ -29,6 +23,18 @@
       <%- include('footer') %>
     </div>
   </div>
+
   <script src="/script.js"></script>
+  <script>
+    function validateForm() {
+      const title = document.getElementById('title').value.trim();
+      const dueDate = document.getElementById('dueDate').value;
+      if (!title || !dueDate) {
+        alert('Title and Due Date are required.');
+        return false;
+      }
+      return true;
+    }
+  </script>
 </body>
 </html>
