@@ -8,17 +8,12 @@ module.exports = (sequelize, DataTypes) => {
       return await this.create({ title, dueDate, completed });
     }
 
-    static async markAsCompleted(id) {
-      const todo = await this.findByPk(id);
-      return todo.update({ completed: !todo.completed });
+    static async getTodos() {
+      return await this.findAll({ order: [['dueDate', 'ASC']] });
     }
 
     static async deleteTodo(id) {
       return await this.destroy({ where: { id } });
-    }
-
-    static async getTodos() {
-      return await this.findAll({ order: [['dueDate', 'ASC']] });
     }
   }
 
