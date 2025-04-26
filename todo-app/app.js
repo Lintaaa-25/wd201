@@ -58,8 +58,6 @@ app.delete('/todos/:id', async (req, res) => {
   }
 });
 
-// Sync the database and start the server
-const sequelize = require('./db'); // Import DB connection
 
 sequelize.sync().then(() => {
   const port = process.env.PORT || 3000;
