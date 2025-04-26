@@ -24,20 +24,11 @@
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       </form>
 
-      <%- include('todos', { overdue, dueToday, dueLater, completed }) %>
+      <%- include('todos', { overdue, dueToday, dueLater, completed, csrfToken }) %>
 
       <%- include('footer') %>
     </div>
   </div>
-
-  <script>
-    const form = document.getElementById('todo-form');
-    form.addEventListener('submit', (e) => {
-      if (!form.title.value.trim() || !form.dueDate.value) {
-        e.preventDefault();
-        alert('Please fill both title and due date!');
-      }
-    });
-  </script>
+  <script src="/script.js"></script>
 </body>
 </html>
