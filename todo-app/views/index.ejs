@@ -51,12 +51,12 @@
     <h1>Todo Application</h1>
   </header>
 
-  <form method="POST" action="/todos">
-    <input type="text" name="title" placeholder="Title" required />
-    <input type="date" name="dueDate" required />
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <button type="submit">Add Todo</button>
-  </form>
+  <form method="POST" action="/todos" class="flex flex-col sm:flex-row items-center bg-white p-4 rounded shadow-md gap-2 mb-6">
+  <input type="text" name="title" placeholder="Title" required class="border p-2 rounded w-full sm:w-auto">
+  <input type="date" name="dueDate" required class="border p-2 rounded w-full sm:w-auto">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Add Todo</button>
+</form>
 
   <section>
     <h2>Overdue (<span id="overdue-count"><%= overdue.length %></span>)</h2>
