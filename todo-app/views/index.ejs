@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <script src="https://cdn.tailwindcss.com"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Todo App</title>
+  <title>Todo Application</title>
 </head>
 <body>
   <div class="grid grid-cols-6">
     <div class="col-start-2 col-span-4">
       <%- include('header') %>
 
-      <form action="/todos" method="POST" id="todo-form" onsubmit="return validateForm();" class="flex flex-col gap-2 my-4">
+      <form id="todo-form" class="flex flex-col gap-2 my-4">
         <input type="text" name="title" id="title" placeholder="Enter title" required class="border border-gray-400 p-2 rounded">
         <input type="date" name="dueDate" id="dueDate" required class="border border-gray-400 p-2 rounded">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -24,17 +24,38 @@
     </div>
   </div>
 
-  <script src="/script.js"></script>
   <script>
-    function validateForm() {
+    async function addTodo(event) {
+      event.preventDefault();
       const title = document.getElementById('title').value.trim();
       const dueDate = document.getElementById('dueDate').value;
+      const csrfToken = document.querySelector('input[name="_csrf"]').value;
+
       if (!title || !dueDate) {
-        alert('Title and Due Date are required.');
-        return false;
+        alert('Both Title and Due Date are required!');
+        return;
       }
-      return true;
+
+      const response = await fetch("/todos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "CSRF-Token": csrfToken,
+        },
+        body: JSON.stringify({ title, dueDate }),
+      });
+
+      if (response.ok) {
+        location.reload();
+      } else {
+        const message = await response.text();
+        alert(message);
+      }
     }
+
+    document.getElementById("todo-form").addEventListener("submit", addTodo);
   </script>
+
+  <script src="/script.js"></script>
 </body>
 </html>
