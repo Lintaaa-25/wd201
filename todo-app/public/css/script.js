@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // For updating checkbox status
+  // For updating checkbox status (completed or not)
   document.querySelectorAll('.todo-checkbox').forEach(checkbox => {
     checkbox.addEventListener('change', async (e) => {
       const todoId = e.target.dataset.id;
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         body: JSON.stringify({ completed })
       });
-      location.reload();
+      location.reload(); // Reload the page after status change
     });
   });
 
