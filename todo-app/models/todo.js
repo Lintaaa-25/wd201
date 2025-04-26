@@ -1,42 +1,40 @@
-const { Model } = require('sequelize');
+// Assuming Sequelize ORM
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../db');
 
-module.exports = (sequelize, DataTypes) => {
-  class Todo extends Model {
-    static associate(models) {}
+class Todo extends Model {}
 
-    static async createTodo({ title, dueDate, completed }) {
-      return await this.create({ title, dueDate, completed });
-    }
+Todo.init({
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  dueDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: false,
+  },
+  completed: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+}, {
+  sequelize,
+  modelName: 'Todo',
+});
 
-    static async getTodos() {
-      return await this.findAll({ order: [['dueDate', 'ASC']] });
-    }
-
-    static async remove(id) {
-      return await this.destroy({ where: { id, }, });
-    }
-  }
-
-  Todo.init(
-    {
-      title: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      dueDate: {
-        type: DataTypes.DATEONLY,
-        allowNull: false,
-      },
-      completed: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
-    },
-    {
-      sequelize,
-      modelName: 'Todo',
-    }
-  );
-
-  return Todo;
+// Fetch all todos
+Todo.getTodos = async function () {
+  return await Todo.findAll();
 };
+
+// Create a new Todo
+Todo.createTodo = async function (data) {
+  return await Todo.create(data);
+};
+
+// Remove a Todo by ID
+Todo.remove = async function (id) {
+  return await Todo.destroy({ where: { id } });
+};
+
+module.exports = { Todo };
