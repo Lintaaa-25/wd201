@@ -1,84 +1,110 @@
-<section class="my-4">
-  <h5>Overdue (<span id="count-overdue"><%= overdue.length %></span>)</h5>
-  <table class="table-auto w-full" id="overdue-section">
-    <% overdue.forEach(todo => { %>
-      <tr class="Todo-Item" id="todo-<%= todo.id %>">
-        <td>
-          <input type="checkbox" class="todo-checkbox" id="check-<%= todo.id %>" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>" <%= todo.completed ? 'checked' : '' %> >
-        </td>
-        <td>
-          <label for="check-<%= todo.id %>"><%= todo.title %></label>
-        </td>
-        <td>
-          <button class="delete-button text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">
-            🗑️ Delete
-          </button>
-        </td>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Todo App</title>
+  <meta name="csrf-token" content="<%= csrfToken %>">
+</head>
+<body>
+  <header>
+    <h1>Todo Application</h1>
+  </header>
+
+  <form method="POST" action="/todos" id="todoForm">
+    <input type="text" name="title" placeholder="Title" required />
+    <input type="date" name="dueDate" required />
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <button type="submit">Add Todo</button>
+  </form>
+
+  <section>
+    <h2>Overdue (<span id="overdue-count"><%= overdue.length %></span>)</h2>
+    <ul>
+      <% overdue.forEach(todo => { %>
+        <li>
+          <label for="todo-<%= todo.id %>">
+            <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : "" %> onclick="updateTodo(<%= todo.id %>)" />
+            <%= todo.title %> (Due: <%= todo.dueDate %>)
+          </label>
+          <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Due Today (<span id="due-today-count"><%= dueToday.length %></span>)</h2>
+    <ul>
+      <% dueToday.forEach(todo => { %>
+        <li>
+          <label for="todo-<%= todo.id %>">
+            <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : "" %> onclick="updateTodo(<%= todo.id %>)" />
+            <%= todo.title %> (Due: <%= todo.dueDate %>)
+          </label>
+          <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Due Later (<span id="due-later-count"><%= dueLater.length %></span>)</h2>
+    <ul>
+      <% dueLater.forEach(todo => { %>
+        <li>
+          <label for="todo-<%= todo.id %>">
+            <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : "" %> onclick="updateTodo(<%= todo.id %>)" />
+            <%= todo.title %> (Due: <%= todo.dueDate %>)
+          </label>
+          <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Completed (<span id="completed-count"><%= completed.length %></span>)</h2>
+    <ul>
+      <% completed.forEach(todo => { %>
+        <li>
+          <label for="todo-<%= todo.id %>">
+            <input type="checkbox" id="todo-<%= todo.id %>" checked onclick="updateTodo(<%= todo.id %>)" />
+            <%= todo.title %> (Due: <%= todo.dueDate %>)
+          </label>
+          <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Due Date</th>
+        <th>Status</th>
+        <th>Actions</th>
       </tr>
-    <% }) %>
+    </thead>
+    <tbody id="todo-table-body">
+      <% [...overdue, ...dueToday, ...dueLater, ...completed].forEach(todo => { %>
+        <tr>
+          <td><%= todo.title %></td>
+          <td><%= todo.dueDate %></td>
+          <td><%= todo.completed ? "Completed" : "Pending" %></td>
+          <td>
+            <button onclick="updateTodo(<%= todo.id %>)"><%= todo.completed ? "Undo" : "Complete" %></button>
+            <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
   </table>
 
-  <h5>Due Today (<span id="count-due-today"><%= dueToday.length %></span>)</h5>
-  <table class="table-auto w-full" id="today-section">
-    <% dueToday.forEach(todo => { %>
-      <tr class="Todo-Item" id="todo-<%= todo.id %>">
-        <td>
-          <input type="checkbox" class="todo-checkbox" id="check-<%= todo.id %>" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>" <%= todo.completed ? 'checked' : '' %> >
-        </td>
-        <td>
-          <label for="check-<%= todo.id %>"><%= todo.title %></label>
-        </td>
-        <td>
-          <button class="delete-button text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">
-            🗑️ Delete
-          </button>
-        </td>
-      </tr>
-    <% }) %>
-  </table>
+  <footer>
+    <p>Todo Application Footer</p>
+  </footer>
 
-  <h5>Due Later (<span id="count-due-later"><%= dueLater.length %></span>)</h5>
-  <table class="table-auto w-full" id="later-section">
-    <% dueLater.forEach(todo => { %>
-      <tr class="Todo-Item" id="todo-<%= todo.id %>">
-        <td>
-          <input type="checkbox" class="todo-checkbox" id="check-<%= todo.id %>" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>" <%= todo.completed ? 'checked' : '' %> >
-        </td>
-        <td>
-          <label for="check-<%= todo.id %>"><%= todo.title %></label>
-        </td>
-        <td>
-          <button class="delete-button text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">
-            🗑️ Delete
-          </button>
-        </td>
-      </tr>
-    <% }) %>
-  </table>
-
-  <h5>Completed (<span id="count-completed"><%= completed.length %></span>)</h5>
-  <table class="table-auto w-full" id="completed-section">
-    <% completed.forEach(todo => { %>
-      <tr class="Todo-Item" id="todo-<%= todo.id %>">
-        <td>
-          <input type="checkbox" class="todo-checkbox" id="check-<%= todo.id %>" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>" checked>
-        </td>
-        <td>
-          <label for="check-<%= todo.id %>"><%= todo.title %></label>
-        </td>
-        <td>
-          <button class="delete-button text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">
-            🗑️ Delete
-          </button>
-        </td>
-      </tr>
-    <% }) %>
-  </table>
-</section>
-
-<!-- Add Todo Form -->
-<form action="/todos" method="POST" id="add-todo-form">
-  <input type="text" name="title" id="todo-title" placeholder="Enter todo title" required>
-  <input type="date" name="dueDate" id="todo-due-date" required>
-  <button type="submit">Add Todo</button>
-</form>
+  <script src="/index.js"></script>
+</body>
+</html>
