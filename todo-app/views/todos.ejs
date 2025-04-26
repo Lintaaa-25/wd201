@@ -4,7 +4,7 @@
     <% overdue.forEach(todo => { %>
       <tr class="Todo-Item">
         <td><input type="checkbox" class="todo-checkbox" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>"></td>
-        <td><label for="todo-checkbox-<%= todo.id %>"><%= todo.title %></label></td>
+        <td><label><%= todo.title %></label></td>
         <td><button class="delete-button text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">Delete</button></td>
       </tr>
     <% }) %>
@@ -15,7 +15,7 @@
     <% dueToday.forEach(todo => { %>
       <tr class="Todo-Item">
         <td><input type="checkbox" class="todo-checkbox" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>"></td>
-        <td><label for="todo-checkbox-<%= todo.id %>"><%= todo.title %></label></td>
+        <td><label><%= todo.title %></label></td>
         <td><button class="delete-button text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">Delete</button></td>
       </tr>
     <% }) %>
@@ -26,7 +26,7 @@
     <% dueLater.forEach(todo => { %>
       <tr class="Todo-Item">
         <td><input type="checkbox" class="todo-checkbox" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>"></td>
-        <td><label for="todo-checkbox-<%= todo.id %>"><%= todo.title %></label></td>
+        <td><label><%= todo.title %></label></td>
         <td><button class="delete-button text-red-600" data-id="<%= todo.id %>" data-csrf="<%= csrfToken %>">Delete</button></td>
       </tr>
     <% }) %>
