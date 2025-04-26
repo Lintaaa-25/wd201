@@ -1,69 +1,47 @@
 const express = require('express');
 const app = express();
-const csrf = require('csurf');
 const bodyParser = require('body-parser');
-const path = require('path');
+const csrf = require('tiny-csrf');
+const cookieParser = require('cookie-parser');
+const { Todo } = require('./models');
 
-// Setup middleware
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser("supersecret"));
+app.use(csrf("A32CharacterLongSuperSecretKeyHere12345678", ["POST", "PUT", "DELETE"]));
+app.use(express.static('public'));
+
 app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, 'public')));
-const csrfProtection = csrf({ cookie: true });
-app.use(csrfProtection);
 
-// Sample data (for simplicity)
-let todos = [
-  { id: 1, title: 'Overdue Todo', dueDate: '2025-04-01', completed: false },
-  { id: 2, title: 'Due Today Todo', dueDate: '2025-04-26', completed: false },
-  { id: 3, title: 'Due Later Todo', dueDate: '2025-04-28', completed: false },
-];
-let idCounter = 4;
+const { Op } = require('sequelize');
+const today = new Date().toISOString().split('T')[0];
 
-// Home route
-app.get('/', (req, res) => {
-  const overdue = todos.filter(todo => new Date(todo.dueDate) < new Date() && !todo.completed);
-  const dueToday = todos.filter(todo => new Date(todo.dueDate).toDateString() === new Date().toDateString() && !todo.completed);
-  const dueLater = todos.filter(todo => new Date(todo.dueDate) > new Date() && !todo.completed);
+app.get('/', async (req, res) => {
+  const todos = await Todo.getTodos();
+  const overdue = todos.filter(todo => todo.dueDate < today && !todo.completed);
+  const dueToday = todos.filter(todo => todo.dueDate === today && !todo.completed);
+  const dueLater = todos.filter(todo => todo.dueDate > today && !todo.completed);
   const completed = todos.filter(todo => todo.completed);
 
-  res.render('index', {
-    overdue,
-    dueToday,
-    dueLater,
-    completed,
-    csrfToken: req.csrfToken(),
-  });
+  res.render('index', { overdue, dueToday, dueLater, completed, csrfToken: req.csrfToken() });
 });
 
-// Add a new todo
-app.post('/todos', (req, res) => {
-  const { title, dueDate } = req.body;
-  if (!title || !dueDate) {
-    return res.status(400).send('Title and Due Date are required');
+app.post('/todos', async (req, res) => {
+  if (!req.body.title || !req.body.dueDate) {
+    return res.status(400).send('Title and DueDate are required!');
   }
-
-  const newTodo = { id: idCounter++, title, dueDate, completed: false };
-  todos.push(newTodo);
+  await Todo.createTodo({ title: req.body.title, dueDate: req.body.dueDate, completed: false });
   res.redirect('/');
 });
 
-// Update a todo as completed or not
-app.put('/todos/:id', (req, res) => {
-  const todo = todos.find(t => t.id == req.params.id);
-  if (!todo) return res.status(404).send('Todo not found');
-
-  todo.completed = req.body.completed;
-  res.sendStatus(200);
+app.put('/todos/:id', async (req, res) => {
+  const todo = await Todo.markAsCompleted(req.params.id);
+  res.json(todo);
 });
 
-// Delete a todo
-app.delete('/todos/:id', (req, res) => {
-  todos = todos.filter(todo => todo.id != req.params.id);
-  res.sendStatus(200);
+app.delete('/todos/:id', async (req, res) => {
+  await Todo.deleteTodo(req.params.id);
+  res.json({ success: true });
 });
 
-// Start the server
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
-});
+module.exports = app;
