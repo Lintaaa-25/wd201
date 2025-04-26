@@ -9,7 +9,7 @@ const { Todo } = require('./models'); // Sequelize Todo model
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser("supersecret"));
-app.use(csrf("A32CharacterLongSuperSecretKey!", ["POST", "PUT", "DELETE"]));
+app.use(csrf("A32CharacterLongSuperSecretKey!@#", ["POST", "PUT", "DELETE"]));
 app.use(express.static('public'));
 
 app.set('view engine', 'ejs');
