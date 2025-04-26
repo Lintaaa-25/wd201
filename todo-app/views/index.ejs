@@ -6,46 +6,7 @@
   <meta name="csrf-token" content="<%= csrfToken %>">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/styles.css">
-
-  <script>
-    function updateTodo(id) {
-      fetch(`/todos/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          _csrf: document.querySelector('meta[name="csrf-token"]').content
-        })
-      })
-      .then(res => {
-        if (res.ok) {
-          window.location.reload();
-        }
-      })
-      .catch(err => console.error(err));
-    }
-
-    function deleteTodo(id) {
-      fetch(`/todos/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          _csrf: document.querySelector('meta[name="csrf-token"]').content
-        })
-      })
-      .then(res => {
-        if (res.ok) {
-          window.location.reload();
-        }
-      })
-      .catch(err => console.error(err));
-    }
-  </script>
 </head>
-
 <body class="bg-gray-100 font-sans text-gray-800">
 
   <header class="bg-blue-500 text-white p-4 text-center">
@@ -137,47 +98,4 @@
           </div>
           <a href="javascript:void(0);" onclick="deleteTodo(<%= todo.id %>)" class="text-red-500 hover:text-red-700 hover:bg-red-100 p-2 rounded-md transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0l-.346-9m9.708-3.75H5.25m16.5 0a2.25 2.25 0 01-2.25 2.25h-13.5a2.25 2.25 0 01-2.25-2.25m16.5 0V5.25A2.25 2.25 0 0018.75 3h-13.5a2.25 2.25 0 00-2.25 2.25v.75" />
-            </svg>
-          </a>
-        </li>
-        <% }) %>
-      </ul>
-    </section>
-
-    <!-- Completed Todos -->
-    <section>
-      <h2 class="text-xl font-semibold">Completed (<span id="completed-count"><%= completed.length %></span>)</h2>
-      <ul class="space-y-4">
-        <% completed.forEach(todo => { %>
-        <li class="flex items-center justify-between bg-white p-4 rounded shadow-md">
-          <div class="flex items-center gap-4">
-            <input 
-              id="todo-<%= todo.id %>" 
-              type="checkbox" 
-              checked
-              onclick="updateTodo(<%= todo.id %>)"
-              class="h-5 w-5"
-            />
-            <label for="todo-<%= todo.id %>" class="line-through text-gray-500">
-              <%= todo.title %> (Due: <%= todo.dueDate %>)
-            </label>
-          </div>
-          <a href="javascript:void(0);" onclick="deleteTodo(<%= todo.id %>)" class="text-red-500 hover:text-red-700 hover:bg-red-100 p-2 rounded-md transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0l-.346-9m9.708-3.75H5.25m16.5 0a2.25 2.25 0 01-2.25 2.25h-13.5a2.25 2.25 0 01-2.25-2.25m16.5 0V5.25A2.25 2.25 0 0018.75 3h-13.5a2.25 2.25 0 00-2.25 2.25v.75" />
-            </svg>
-          </a>
-        </li>
-        <% }) %>
-      </ul>
-    </section>
-
-  </div>
-
-  <footer class="bg-gray-800 text-white text-center py-4">
-    <p>&copy; 2025 Todo Application</p>
-  </footer>
-
-</body>
-</html>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0l-.346-9m9.708-3.75H5.25m16.5 0a2.25 2.25 0 01-2.25 2.25h-13.5a2.25 2.25 0 01-2.25-2.25m16.5 0V5.25A2.25 2.25 0 0018.75 3h-13.5a2.25 2.
