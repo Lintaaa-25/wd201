@@ -12,8 +12,8 @@ module.exports = (sequelize, DataTypes) => {
       return await this.findAll({ order: [['dueDate', 'ASC']] });
     }
 
-    static async deleteTodo(id) {
-      return await this.destroy({ where: { id } });
+    static async remove(id) {
+      return await this.destroy({ where: { id, }, });
     }
   }
 
