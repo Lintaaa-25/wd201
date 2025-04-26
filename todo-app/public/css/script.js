@@ -22,14 +22,20 @@ document.addEventListener('DOMContentLoaded', function() {
       const todoId = e.target.dataset.id;
       const csrf = e.target.dataset.csrf;
 
-      await fetch(`/todos/${todoId}`, {
+      const response = await fetch(`/todos/${todoId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
           'CSRF-Token': csrf
         }
       });
-      window.location.reload();
+
+      if (response.ok) {
+        const todoRow = document.getElementById(`todo-${todoId}`);
+        todoRow.remove();
+      } else {
+        alert('Failed to delete Todo');
+      }
     });
   });
 });
