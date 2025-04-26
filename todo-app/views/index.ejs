@@ -4,14 +4,54 @@
   <meta charset="UTF-8">
   <title>Todo App</title>
   <meta name="csrf-token" content="<%= csrfToken %>">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/styles.css">
+
+  <script>
+    function updateTodo(id) {
+      fetch(`/todos/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          _csrf: document.querySelector('meta[name="csrf-token"]').content
+        })
+      })
+      .then(res => {
+        if (res.ok) {
+          window.location.reload();
+        }
+      })
+      .catch(err => console.error(err));
+    }
+
+    function deleteTodo(id) {
+      fetch(`/todos/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          _csrf: document.querySelector('meta[name="csrf-token"]').content
+        })
+      })
+      .then(res => {
+        if (res.ok) {
+          window.location.reload();
+        }
+      })
+      .catch(err => console.error(err));
+    }
+  </script>
 </head>
+
 <body>
   <header>
     <h1>Todo Application</h1>
   </header>
 
-  <form method="POST" action="/todos" id="todoForm">
+  <form method="POST" action="/todos">
     <input type="text" name="title" placeholder="Title" required />
     <input type="date" name="dueDate" required />
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -23,11 +63,20 @@
     <ul>
       <% overdue.forEach(todo => { %>
         <li>
+          <input 
+            id="todo-<%= todo.id %>" 
+            type="checkbox" 
+            <% if (todo.completed) { %> checked <% } %> 
+            onclick="updateTodo(<%= todo.id %>)"
+          />
           <label for="todo-<%= todo.id %>">
-            <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : "" %> onclick="updateTodo(<%= todo.id %>)" />
             <%= todo.title %> (Due: <%= todo.dueDate %>)
           </label>
-          <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+          <a href="javascript:void(0);" onclick="deleteTodo(<%= todo.id %>)">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0l-.346-9m9.708-3.75H5.25m16.5 0a2.25 2.25 0 01-2.25 2.25h-13.5a2.25 2.25 0 01-2.25-2.25m16.5 0V5.25A2.25 2.25 0 0018.75 3h-13.5a2.25 2.25 0 00-2.25 2.25v.75" />
+            </svg>
+          </a>
         </li>
       <% }) %>
     </ul>
@@ -38,11 +87,20 @@
     <ul>
       <% dueToday.forEach(todo => { %>
         <li>
+          <input 
+            id="todo-<%= todo.id %>" 
+            type="checkbox" 
+            <% if (todo.completed) { %> checked <% } %> 
+            onclick="updateTodo(<%= todo.id %>)"
+          />
           <label for="todo-<%= todo.id %>">
-            <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : "" %> onclick="updateTodo(<%= todo.id %>)" />
             <%= todo.title %> (Due: <%= todo.dueDate %>)
           </label>
-          <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+          <a href="javascript:void(0);" onclick="deleteTodo(<%= todo.id %>)">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0l-.346-9m9.708-3.75H5.25m16.5 0a2.25 2.25 0 01-2.25 2.25h-13.5a2.25 2.25 0 01-2.25-2.25m16.5 0V5.25A2.25 2.25 0 0018.75 3h-13.5a2.25 2.25 0 00-2.25 2.25v.75" />
+            </svg>
+          </a>
         </li>
       <% }) %>
     </ul>
@@ -53,11 +111,20 @@
     <ul>
       <% dueLater.forEach(todo => { %>
         <li>
+          <input 
+            id="todo-<%= todo.id %>" 
+            type="checkbox" 
+            <% if (todo.completed) { %> checked <% } %> 
+            onclick="updateTodo(<%= todo.id %>)"
+          />
           <label for="todo-<%= todo.id %>">
-            <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : "" %> onclick="updateTodo(<%= todo.id %>)" />
             <%= todo.title %> (Due: <%= todo.dueDate %>)
           </label>
-          <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+          <a href="javascript:void(0);" onclick="deleteTodo(<%= todo.id %>)">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0l-.346-9m9.708-3.75H5.25m16.5 0a2.25 2.25 0 01-2.25 2.25h-13.5a2.25 2.25 0 01-2.25-2.25m16.5 0V5.25A2.25 2.25 0 0018.75 3h-13.5a2.25 2.25 0 00-2.25 2.25v.75" />
+            </svg>
+          </a>
         </li>
       <% }) %>
     </ul>
@@ -68,11 +135,20 @@
     <ul>
       <% completed.forEach(todo => { %>
         <li>
+          <input 
+            id="todo-<%= todo.id %>" 
+            type="checkbox" 
+            checked
+            onclick="updateTodo(<%= todo.id %>)"
+          />
           <label for="todo-<%= todo.id %>">
-            <input type="checkbox" id="todo-<%= todo.id %>" checked onclick="updateTodo(<%= todo.id %>)" />
             <%= todo.title %> (Due: <%= todo.dueDate %>)
           </label>
-          <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+          <a href="javascript:void(0);" onclick="deleteTodo(<%= todo.id %>)">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 inline">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0l-.346-9m9.708-3.75H5.25m16.5 0a2.25 2.25 0 01-2.25 2.25h-13.5a2.25 2.25 0 01-2.25-2.25m16.5 0V5.25A2.25 2.25 0 0018.75 3h-13.5a2.25 2.25 0 00-2.25 2.25v.75" />
+            </svg>
+          </a>
         </li>
       <% }) %>
     </ul>
@@ -81,7 +157,5 @@
   <footer>
     <p>Todo Application Footer</p>
   </footer>
-
-  <script src="/index.js"></script>
 </body>
 </html>
