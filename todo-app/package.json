@@ -1,9 +1,10 @@
 {
   "name": "todo-app",
   "version": "1.0.0",
+  "description": "Todo Application",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
     "start:prod": "node server.js"
   },
   "dependencies": {
