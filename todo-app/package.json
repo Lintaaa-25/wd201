@@ -4,6 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
+    "start:prod": "node server.js"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
