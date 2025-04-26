@@ -40,8 +40,13 @@ app.put('/todos/:id', async (req, res) => {
 });
 
 app.delete('/todos/:id', async (req, res) => {
-  await Todo.deleteTodo(req.params.id);
-  res.json({ success: true });
+  console.log("Delete a todo by ID: ",req.params.id);
+  try{
+  await Todo.remove(req.params.id);
+  return res.json({ success: true });
+  }catch (error) {
+   return res.status(422).json(error);
+  }
 });
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
