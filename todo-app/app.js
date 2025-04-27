@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const csrf = require('tiny-csrf');
 const cookieParser = require('cookie-parser');
 const { Sequelize } = require('sequelize');
-const Todo = require('./models/todo');
+const { Todo } = require('./models/todo');
 const app = express();
 
 // Database connection
