@@ -26,7 +26,6 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <!-- Correct function to toggle completion -->
                 <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
@@ -111,15 +110,15 @@
       window.location.reload();
     }
 
-    // Toggle completed status (checkbox click)
-    async function toggleCompleted(id, completed) {
+    // Toggle completion status (checkbox click)
+    async function toggleCompleted(id, currentStatus) {
       await fetch(`/todos/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          completed: !completed,  // Toggle the current completion status
+          completed: !currentStatus,  // Toggle the current completion status
         }),
       });
       window.location.reload();  // Reload to update the UI
