@@ -46,10 +46,13 @@ app.post("/todos", async (req, res) => {
 
 app.put("/todos/:id", async (req, res) => {
   try {
-    const todo = await Todo.findByPk(req.params.id);
-    await todo.setCompletionStatus(req.body.completed);
-    const updatedTodo = await Todo.findByPk(req.params.id); // Fetch again
-    res.json(updatedTodo); // Send clean updated object
+    const { completed } = req.body;  // Get the completed status (true/false)
+    if (typeof completed !== 'boolean') {
+      return res.status(400).json({ error: "Completed status must be a boolean" });
+    }
+
+    const todo = await Todo.setCompletionStatus(req.params.id, completed);
+    res.json(todo);  // Return the updated todo item
   } catch (err) {
     console.error(err);
     res.status(422).send(err.message);
