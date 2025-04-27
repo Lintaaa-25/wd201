@@ -116,19 +116,22 @@
       window.location.reload(); // Reload the page to reflect changes
     }
 
-    // Function to toggle the completion status of a Todo item
-    async function toggleCompleted(id, currentStatus) {
-      await fetch(`/todos/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          completed: !currentStatus, // Toggle the current completion status
-        }),
-      });
-      window.location.reload(); // Reload to update the UI after toggling
-    }
+    async function toggleCompleted(id) {
+  const checkbox = document.getElementById(`todo-${id}`);
+  const completed = checkbox.checked;
+
+  await fetch(`/todos/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      completed: completed,
+    }),
+  });
+  window.location.reload();
+}
+
   </script>
 
 </body>
