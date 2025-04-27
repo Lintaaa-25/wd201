@@ -47,13 +47,15 @@ app.post("/todos", async (req, res) => {
 app.put("/todos/:id", async (req, res) => {
   try {
     const todo = await Todo.findByPk(req.params.id);
-    const updated = await todo.setCompletionStatus(req.body.completed);
-    res.json(updated);
+    await todo.setCompletionStatus(req.body.completed);
+    const updatedTodo = await Todo.findByPk(req.params.id); // Fetch again
+    res.json(updatedTodo); // Send clean updated object
   } catch (err) {
     console.error(err);
     res.status(422).send(err.message);
   }
 });
+
 
 app.delete("/todos/:id", async (req, res) => {
   try {
