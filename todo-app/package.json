@@ -1,28 +1,32 @@
 {
   "name": "todo-app",
   "version": "1.0.0",
-  "description": "Simple Todo App for Pupilfirst Assignment",
-  "main": "app.js",
+  "description": "A full-featured Todo App with Express.js, PostgreSQL, EJS, Sequelize, CSRF protection",
+  "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "start:prod": "node app.js",
-    "dev": "nodemon app.js",
-    "test": "echo \"No test yet\""
+    "start": "node index.js",
+    "start:prod": "NODE_ENV=production node index.js",
+    "test": "jest"
   },
-  "keywords": [],
-  "author": "",
+  "author": "linta",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
+    "csurf": "^1.11.0",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
-    "pg": "^8.11.1",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.17.3",
+    "pg": "^8.11.3",
     "sequelize": "^6.32.1",
-    "sqlite3": "^5.1.6",
-    "tiny-csrf": "^1.0.6"
+    "connect-session-sequelize": "^7.1.5",
+    "tiny-csrf": "^0.2.5"
   },
-   "devDependencies": {
-    "nodemon": "^3.0.2"
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "sequelize-cli": "^6.6.1"
   }
 }
+
