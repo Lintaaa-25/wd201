@@ -21,3 +21,13 @@ async function deleteTodo(id) {
   });
   window.location.reload();
 }
+async function toggleTodo(id, completed) {
+    await fetch(`/todos/${id}`, {
+      method: "PUT",
+      headers: {
+      "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ completed: !completed }), // Toggle the status
+    });
+    window.location.reload();
+  }
