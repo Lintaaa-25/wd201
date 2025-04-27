@@ -52,6 +52,13 @@ module.exports = (sequelize, DataTypes) => {
       return await Todo.update(updatedFields, { where: { id } });
     }
 
+    
+    static async addTodo({ title, dueDate }) {
+      if (!title || !dueDate) throw new Error("Title and DueDate are required");
+     return await Todo.create({ title, dueDate, completed: false });
+}
+
+
     async setCompletionStatus(status) {
       return this.update({ completed: status });
     }
