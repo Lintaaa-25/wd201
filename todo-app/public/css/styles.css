@@ -1,101 +1,35 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f0f4f8;
-  margin: 0;
-  padding: 20px;
-}
-
-header, footer {
-  text-align: center;
-  padding: 20px;
-  background-color: #4CAF50;
-  color: white;
-  margin-bottom: 20px;
-}
-
-form {
-  margin-bottom: 30px;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px #ccc;
-}
-
-form input[type="text"],
-form input[type="date"] {
-  padding: 10px;
-  margin-right: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-form button {
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-form button:hover {
-  background-color: #45a049;
-}
-
-section {
-  margin-bottom: 30px;
-}
-
-section h2 {
-  color: #333;
-}
-
-ul {
-  list-style-type: none;
+  margin: 20px;
   padding: 0;
 }
 
-li {
-  background: white;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 6px;
-  box-shadow: 0px 0px 5px #ccc;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-button {
-  margin-left: 10px;
-  background-color: #e53935;
-  border: none;
+header, footer {
+  background-color: #333;
   color: white;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: 10px;
+  text-align: center;
 }
 
-button:hover {
-  background-color: #c62828;
+main {
+  margin-top: 20px;
 }
 
 table {
   width: 100%;
+  margin-bottom: 20px;
   border-collapse: collapse;
-  margin-top: 30px;
 }
 
-table, th, td {
-  border: 1px solid #ddd;
+td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
 }
 
-th, td {
-  padding: 12px;
-  text-align: center;
+button {
+  margin-left: 10px;
 }
 
-th {
-  background-color: #4CAF50;
-  color: white;
+.Todo-Item {
+  font-size: 16px;
 }
