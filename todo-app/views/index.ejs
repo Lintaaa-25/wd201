@@ -103,25 +103,12 @@
   <%- include('footer') %>
 
   <script>
-    async function toggleTodo(id, completed) {
-      await fetch(`/todos/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ completed }),
-      });
-      window.location.reload();
-    }
-
     async function deleteTodo(id) {
-      if (confirm("Are you sure you want to delete?")) {
-        await fetch(`/todos/${id}`, {
-          method: "DELETE",
-        });
-        window.location.reload();
-      }
-    }
+    await fetch(`/todos/${id}`, {
+      method: "DELETE",
+    });
+    window.location.reload();
+  }
   </script>
 
 </body>
