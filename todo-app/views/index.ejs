@@ -9,6 +9,7 @@
   <%- include('header') %>
 
   <main>
+    <!-- Form to add new Todo -->
     <section>
       <form action="/todos" method="POST">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
@@ -18,6 +19,7 @@
       </form>
     </section>
 
+    <!-- Overdue Todo section -->
     <section>
       <h2>Overdue</h2>
       <p id="count-overdue"><%= overdue.length %> overdue tasks</p>
@@ -38,6 +40,7 @@
       </table>
     </section>
 
+    <!-- Due Today Todo section -->
     <section>
       <h2>Due Today</h2>
       <p id="count-due-today"><%= dueToday.length %> tasks due today</p>
@@ -58,6 +61,7 @@
       </table>
     </section>
 
+    <!-- Due Later Todo section -->
     <section>
       <h2>Due Later</h2>
       <p id="count-due-later"><%= dueLater.length %> tasks due later</p>
@@ -78,6 +82,7 @@
       </table>
     </section>
 
+    <!-- Completed Todo section -->
     <section>
       <h2>Completed</h2>
       <p id="count-completed"><%= completedItems.length %> completed tasks</p>
@@ -103,14 +108,15 @@
   <%- include('footer') %>
 
   <script>
+    // Function to delete a Todo item
     async function deleteTodo(id) {
       await fetch(`/todos/${id}`, {
         method: "DELETE",
       });
-      window.location.reload();
+      window.location.reload(); // Reload the page to reflect changes
     }
 
-    // Toggle completion status (checkbox click)
+    // Function to toggle the completion status of a Todo item
     async function toggleCompleted(id, currentStatus) {
       await fetch(`/todos/${id}`, {
         method: "PUT",
@@ -118,11 +124,13 @@
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          completed: !currentStatus,  // Toggle the current completion status
+          completed: !currentStatus, // Toggle the current completion status
         }),
       });
-      window.location.reload();  // Reload to update the UI
+      window.location.reload(); // Reload to update the UI after toggling
     }
   </script>
+
 </body>
 </html>
+
