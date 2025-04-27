@@ -18,6 +18,7 @@
       </form>
     </section>
 
+    <!-- Overdue Section -->
     <section>
       <h2>Overdue</h2>
       <p id="count-overdue"><%= overdue.length %> overdue tasks</p>
@@ -26,7 +27,12 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" />
+                <input 
+                  type="checkbox" 
+                  id="todo-<%= todo.id %>" 
+                  onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)"
+                  <%= todo.completed ? 'checked' : '' %>
+                />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -38,6 +44,7 @@
       </table>
     </section>
 
+    <!-- Due Today Section -->
     <section>
       <h2>Due Today</h2>
       <p id="count-due-today"><%= dueToday.length %> tasks due today</p>
@@ -46,7 +53,12 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" />
+                <input 
+                  type="checkbox" 
+                  id="todo-<%= todo.id %>" 
+                  onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)"
+                  <%= todo.completed ? 'checked' : '' %>
+                />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -58,6 +70,7 @@
       </table>
     </section>
 
+    <!-- Due Later Section -->
     <section>
       <h2>Due Later</h2>
       <p id="count-due-later"><%= dueLater.length %> tasks due later</p>
@@ -66,7 +79,12 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" />
+                <input 
+                  type="checkbox" 
+                  id="todo-<%= todo.id %>" 
+                  onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)"
+                  <%= todo.completed ? 'checked' : '' %>
+                />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -78,6 +96,7 @@
       </table>
     </section>
 
+    <!-- Completed Items Section -->
     <section>
       <h2>Completed</h2>
       <p id="count-completed"><%= completedItems.length %> completed tasks</p>
@@ -86,7 +105,12 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" checked />
+                <input 
+                  type="checkbox" 
+                  id="todo-<%= todo.id %>" 
+                  onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)"
+                  <%= todo.completed ? 'checked' : '' %>
+                />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -101,6 +125,7 @@
   </main>
 
   <%- include('footer') %>
+
 <script>
   async function deleteTodo(id) {
     await fetch(`/todos/${id}`, {
@@ -122,8 +147,6 @@
     window.location.reload();
   }
 </script>
-
-  
 
 </body>
 </html>
