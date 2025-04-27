@@ -46,18 +46,21 @@ app.post("/todos", async (req, res) => {
 
 app.put("/todos/:id", async (req, res) => {
   try {
-    const { completed } = req.body;  // Get the completed status (true/false)
-    if (typeof completed !== 'boolean') {
-      return res.status(400).json({ error: "Completed status must be a boolean" });
+    const { completed } = req.body;
+    const todo = await Todo.setCompletionStatus(req.params.id, completed);
+
+    if (todo[0] === 0) {
+      // If no rows were updated, return an error
+      return res.status(404).send("Todo not found");
     }
 
-    const todo = await Todo.setCompletionStatus(req.params.id, completed);
-    res.json(todo);  // Return the updated todo item
+    res.json({ success: true });
   } catch (err) {
     console.error(err);
-    res.status(422).send(err.message);
+    res.status(500).send(err.message);
   }
 });
+
 
 
 app.delete("/todos/:id", async (req, res) => {
