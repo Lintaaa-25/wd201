@@ -1,46 +1,87 @@
-const { Sequelize, DataTypes } = require('sequelize');
+"use strict";
+const { Model, Op } = require("sequelize");
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: 'postgres',
-  dialectOptions: {
-    ssl: { require: true, rejectUnauthorized: false },
-  },
-  logging: false,
-});
+module.exports = (sequelize, DataTypes) => {
+  class Todo extends Model {
+    static async addTodo({ title, dueDate }) {
+      return await Todo.create({ title, dueDate, completed: false });
+    }
 
-// Define Todo model
-const Todo = sequelize.define('Todo', {
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  dueDate: {
-    type: DataTypes.DATEONLY,
-    allowNull: false,
-  },
-  completed: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-});
+    static async getTodos() {
+      const today = new Date().toISOString().split("T")[0];
 
-// Static method: Add a new Todo
-Todo.addTask = async function (params) {
-  return await this.create(params);
-};
+      const overdue = await Todo.findAll({
+        where: {
+          dueDate: { [Op.lt]: today },
+          completed: false,
+        },
+        order: [["dueDate", "ASC"]],
+      });
 
-// Static method: Show all Todos
-Todo.showList = async function () {
-  return await this.findAll();
-};
+      const dueToday = await Todo.findAll({
+        where: {
+          dueDate: { [Op.eq]: today },
+          completed: false,
+        },
+        order: [["dueDate", "ASC"]],
+      });
 
-// Static method: Remove a Todo by id
-Todo.remove = async function (id) {
-  return await this.destroy({
-    where: {
-      id,
+      const dueLater = await Todo.findAll({
+        where: {
+          dueDate: { [Op.gt]: today },
+          completed: false,
+        },
+        order: [["dueDate", "ASC"]],
+      });
+
+      const completedItems = await Todo.findAll({
+        where: {
+          completed: true,
+        },
+        order: [["dueDate", "ASC"]],
+      });
+
+      return { overdue, dueToday, dueLater, completedItems };
+    }
+
+    static async remove(id) {
+      return await Todo.destroy({ where: { id } });
+    }
+
+    static async updateTodo(id, updatedFields) {
+      return await Todo.update(updatedFields, { where: { id } });
+    }
+
+    async setCompletionStatus(status) {
+      return this.update({ completed: status });
+    }
+  }
+
+  Todo.init(
+    {
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      dueDate: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      completed: {
+        type: DataTypes.BOOLEAN,
+      },
     },
-  });
-};
+    {
+      sequelize,
+      modelName: "Todo",
+    }
+  );
 
-module.exports = { Todo, sequelize };
+  return Todo;
+};
