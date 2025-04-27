@@ -101,15 +101,29 @@
   </main>
 
   <%- include('footer') %>
-
-  <script>
-    async function deleteTodo(id) {
+<script>
+  async function deleteTodo(id) {
     await fetch(`/todos/${id}`, {
       method: "DELETE",
     });
     window.location.reload();
   }
-  </script>
+
+  async function toggleCompleted(id, completed) {
+    await fetch(`/todos/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        completed: !completed,
+      }),
+    });
+    window.location.reload();
+  }
+</script>
+
+  
 
 </body>
 </html>
