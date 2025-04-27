@@ -1,10 +1,15 @@
-// Assuming Sequelize ORM
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../db');
+const { Sequelize, DataTypes } = require('sequelize');
 
-class Todo extends Model {}
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+  dialectOptions: {
+    ssl: { require: true, rejectUnauthorized: false },
+  },
+  logging: false,
+});
 
-Todo.init({
+// Define Todo model
+const Todo = sequelize.define('Todo', {
   title: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -17,24 +22,25 @@ Todo.init({
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-}, {
-  sequelize,
-  modelName: 'Todo',
 });
 
-// Fetch all todos
-Todo.getTodos = async function () {
-  return await Todo.findAll();
+// Static method: Add a new Todo
+Todo.addTask = async function (params) {
+  return await this.create(params);
 };
 
-// Create a new Todo
-Todo.createTodo = async function (data) {
-  return await Todo.create(data);
+// Static method: Show all Todos
+Todo.showList = async function () {
+  return await this.findAll();
 };
 
-// Remove a Todo by ID
+// Static method: Remove a Todo by id
 Todo.remove = async function (id) {
-  return await Todo.destroy({ where: { id } });
+  return await this.destroy({
+    where: {
+      id,
+    },
+  });
 };
 
-module.exports = { Todo };
+module.exports = { Todo, sequelize };
