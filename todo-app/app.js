@@ -5,7 +5,7 @@ const { Todo } = require("./models");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const csrf = require("tiny-csrf");
-const secret = "e34f8c1f5b5d8f7b3947a2f013529fd52d7b87cf9c7a8b46a0c12e87d8c76d2b";
+const secret = "e34f8c1f5b5d8f7b3947a2f013529fd5"; 
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
