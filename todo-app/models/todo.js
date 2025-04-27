@@ -58,10 +58,14 @@ module.exports = (sequelize, DataTypes) => {
      return await Todo.create({ title, dueDate, completed: false });
 }
 
+static async setCompletionStatus(id, completed) {
+  return await Todo.update(
+    { completed: completed },
+    { where: { id } }
+  );
+}
 
-    async setCompletionStatus(status) {
-      return this.update({ completed: status });
-    }
+    
   }
 
   Todo.init(
