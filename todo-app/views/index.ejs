@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +9,6 @@
 </head>
 <body>
   <%- include('header') %>
-
   <main>
     <!-- Form to add new Todo -->
     <section>
@@ -19,7 +19,6 @@
         <button type="submit">Add Todo</button>
       </form>
     </section>
-
     <!-- Overdue Todo section -->
     <section>
       <h2>Overdue</h2>
@@ -40,7 +39,6 @@
         <% }) %>
       </table>
     </section>
-
     <!-- Due Today Todo section -->
     <section>
       <h2>Due Today</h2>
@@ -61,7 +59,6 @@
         <% }) %>
       </table>
     </section>
-
     <!-- Due Later Todo section -->
     <section>
       <h2>Due Later</h2>
@@ -82,7 +79,6 @@
         <% }) %>
       </table>
     </section>
-
     <!-- Completed Todo section -->
     <section>
       <h2>Completed</h2>
@@ -104,38 +100,30 @@
       </table>
     </section>
   </main>
-
   <%- include('footer') %>
-
   <script>
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
     async function deleteTodo(id) {
       await fetch(`/todos/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "csrf-token": csrfToken
+          "_csrf": csrfToken,
         },
-        credentials: "same-origin" 
       });
       window.location.reload();
     }
-
     async function toggleCompleted(id) {
       const checkbox = document.getElementById(`todo-${id}`);
       const completed = checkbox.checked;
-
       await fetch(`/todos/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "csrf-token": csrfToken
+          "_csrf": csrfToken,
         },
         body: JSON.stringify({ completed }),
-        credentials: "same-origin" 
       });
-
       window.location.reload();
     }
   </script>
