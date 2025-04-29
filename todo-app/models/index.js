@@ -1,16 +1,12 @@
 const Sequelize = require('sequelize');
-require('dotenv').config();  // if you're using .env
+require('dotenv').config(); // load environment variables from .env file
 
-// Select the environment (development, test, or production)
-const env = process.env.NODE_ENV || 'development';
-
-// Use environment variable DATABASE_URL if available, otherwise use config.json
-const config = process.env.DATABASE_URL || require(__dirname + '/../config/config.json')[env];
+const config = process.env.DATABASE_URL || require(__dirname + '/../config/config.json')[process.env.NODE_ENV || 'development'];
 
 const sequelize = new Sequelize(config, {
   dialect: 'postgres',
   protocol: 'postgres',
-  logging: false,
+  logging: false, // you can set this to true if you want to log SQL queries
 });
 
 const db = {};
