@@ -1,94 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Todo App</title>
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Todo List</h1>
+  <%- include('header') %>
 
-    <!-- Form to Add a New Todo -->
-    <form action="/todos" method="POST" class="todo-form">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-      <input type="text" name="title" placeholder="Todo title" required />
-      <input type="date" name="dueDate" required />
-      <button type="submit">Add Todo</button>
-    </form>
+  <main>
+    <!-- Add Todo Form -->
+    <section>
+      <form action="/todos" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <input type="text" name="title" placeholder="Enter todo title" required />
+        <input type="date" name="dueDate" required />
+        <button type="submit">Add Todo</button>
+      </form>
+    </section>
 
-    <% function renderTodos(title, todos) { %>
-      <h2><%= title %></h2>
-      <ul class="list-none">
-        <% todos.forEach(todo => { %>
-          <li class="Todo-Item">
-            <div class="flex items-center w-full my-2 px-2 py-1 rounded hover:bg-purple-50">
-              <input 
-                id="todo-checkbox-<%= todo.id %>" 
-                type="checkbox" 
-                <%= todo.completed ? 'checked' : '' %> 
-                onclick="toggleTodo(<%= todo.id %>, <%= !todo.completed %>)" 
-                class="w-4 h-4"
-              />
-              <label for="todo-checkbox-<%= todo.id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
-                <%= todo.title %> - Due: <%= todo.dueDate %>
+    <!-- Overdue Section -->
+    <section>
+      <h2>Overdue</h2>
+      <p id="count-overdue"><%= overdue.length %> overdue tasks</p>
+      <table>
+        <% overdue.forEach(todo => { %>
+          <tr class="Todo-Item">
+            <td>
+              <label for="todo-<%= todo.id %>">
+                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" <%= todo.completed ? 'checked' : '' %> />
+                <%= todo.title %> - <%= todo.dueDate %>
               </label>
-              <a 
-                href="javascript:void(0);" 
-                onclick="deleteTodo(<%= todo.id %>)" 
-                class="ml-3 text-red-500 hover:text-red-700"
-              >
-                🗑️
-              </a>
-            </div>
-          </li>
-        <% }); %>
-      </ul>
-    <% } %>
+            </td>
+            <td>
+              <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+            </td>
+          </tr>
+        <% }) %>
+      </table>
+    </section>
 
-    <% renderTodos("Overdue", overdue); %>
-    <% renderTodos("Due Today", dueToday); %>
-    <% renderTodos("Due Later", dueLater); %>
-    <% renderTodos("Completed", completed); %>
-  </div>
+    <!-- Due Today Section -->
+    <section>
+      <h2>Due Today</h2>
+      <p id="count-due-today"><%= dueToday.length %> tasks due today</p>
+      <table>
+        <% dueToday.forEach(todo => { %>
+          <tr class="Todo-Item">
+            <td>
+              <label for="todo-<%= todo.id %>">
+                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" <%= todo.completed ? 'checked' : '' %> />
+                <%= todo.title %> - <%= todo.dueDate %>
+              </label>
+            </td>
+            <td>
+              <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+            </td>
+          </tr>
+        <% }) %>
+      </table>
+    </section>
+
+    <!-- Due Later Section -->
+    <section>
+      <h2>Due Later</h2>
+      <p id="count-due-later"><%= dueLater.length %> tasks due later</p>
+      <table>
+        <% dueLater.forEach(todo => { %>
+          <tr class="Todo-Item">
+            <td>
+              <label for="todo-<%= todo.id %>">
+                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" <%= todo.completed ? 'checked' : '' %> />
+                <%= todo.title %> - <%= todo.dueDate %>
+              </label>
+            </td>
+            <td>
+              <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+            </td>
+          </tr>
+        <% }) %>
+      </table>
+    </section>
+
+    <!-- Completed Section -->
+    <section>
+      <h2>Completed</h2>
+      <p id="count-completed"><%= completedItems.length %> completed tasks</p>
+      <table>
+        <% completedItems.forEach(todo => { %>
+          <tr class="Todo-Item">
+            <td>
+              <label for="todo-<%= todo.id %>">
+                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" checked />
+                <%= todo.title %> - <%= todo.dueDate %>
+              </label>
+            </td>
+            <td>
+              <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+            </td>
+          </tr>
+        <% }) %>
+      </table>
+    </section>
+
+  </main>
+
+  <%- include('footer') %>
 
   <script>
-    const csrfToken = "<%= csrfToken %>";
+    // Function to toggle todo completion
+    async function toggleTodo(id, completed) {
+      try {
+        const response = await fetch(`/todos/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": document.querySelector('input[name="_csrf"]').value, // CSRF token
+          },
+          body: JSON.stringify({ completed })
+        });
 
-    // Toggle the completed status of a todo (checkbox click)
-    function toggleTodo(id, completed) {
-      fetch(`/todos/${id}`, {
-        method: "PUT", // HTTP method for updating
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": csrfToken // CSRF token must be sent with PUT request
-        },
-        body: JSON.stringify({ completed }) // Body to update the completion status
-      }).then(response => {
         if (response.ok) {
-          window.location.reload(); // Reload the page after the update
+          window.location.reload(); // Reload to reflect changes
         } else {
-          alert("Failed to update the todo");
+          alert("Failed to update the todo completion");
         }
-      });
+      } catch (err) {
+        console.error(err);
+        alert("Error while toggling completion");
+      }
     }
 
-    // Delete a todo (delete icon click)
-    function deleteTodo(id) {
-      fetch(`/todos/${id}`, {
-        method: "DELETE", // HTTP method for deleting
-        headers: {
-          "X-CSRF-Token": csrfToken // CSRF token must be sent with DELETE request
+    // Function to delete a todo
+    async function deleteTodo(id) {
+      if (confirm("Are you sure you want to delete this todo?")) {
+        try {
+          const response = await fetch(`/todos/${id}`, {
+            method: "DELETE",
+            headers: {
+              "X-CSRF-Token": document.querySelector('input[name="_csrf"]').value, // CSRF token
+            }
+          });
+
+          if (response.ok) {
+            window.location.reload(); // Reload to reflect changes
+          } else {
+            alert("Failed to delete the todo");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Error while deleting todo");
         }
-      }).then(response => {
-        if (response.ok) {
-          window.location.reload(); // Reload the page after deletion
-        } else {
-          alert("Failed to delete the todo");
-        }
-      });
+      }
     }
   </script>
+
 </body>
 </html>
