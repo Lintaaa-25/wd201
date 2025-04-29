@@ -4,7 +4,7 @@ const csrf = require("tiny-csrf");
 const bodyParser = require("body-parser");
 const { Todo } = require("./models");
 const path = require("path");
-const csrfSecret = "my-secret";
+const csrfSecret = "your32characterrandomsecretkey__";
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
