@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="csrf-token" content="<%= csrfToken %>">
   <title>Todo App</title>
   <link rel="stylesheet" href="/css/styles.css">
 </head>
@@ -116,19 +117,20 @@
       window.location.reload(); // Reload the page to reflect changes
     }
 
-    async function toggleCompleted(id) {
-  const checkbox = document.getElementById(`todo-${id}`);
-  const completed = checkbox.checked;
+    async function toggleCompleted(id, currentStatus) {
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
   await fetch(`/todos/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      "CSRF-Token": csrfToken  
     },
     body: JSON.stringify({
-      completed: completed,
+      completed: !currentStatus
     }),
   });
+
   window.location.reload();
 }
 
