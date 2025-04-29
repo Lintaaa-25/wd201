@@ -1,12 +1,15 @@
 const express = require("express");
 const app = express();
 const csrf = require("tiny-csrf");
+const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const { Todo } = require("./models");
 const path = require("path");
 const csrfSecret = "your32characterrandomsecretkey__";
 
 app.set("view engine", "ejs");
+app.use(cookieParser(csrfSecret));
+app.use(csrf({ cookie: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
