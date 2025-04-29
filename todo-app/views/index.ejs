@@ -134,7 +134,7 @@
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "CSRF-Token": csrfToken
+        "csrf-token": csrfToken
       },
     });
     window.location.reload();
@@ -148,7 +148,7 @@
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "CSRF-Token": csrfToken
+        "csrf-token": csrfToken
       },
       body: JSON.stringify({ completed })
     });
