@@ -14,15 +14,16 @@ app.set("trust proxy", 1);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-
+// ✅ Add secure + sameSite config to cookies
 app.use(cookieParser(secret));
 
-
+// ✅ CSRF setup for secure cookies
+app.use(
   csrf(secret, {
     cookie: {
       httpOnly: true,
-      sameSite: "lax", 
-      secure: true,    
+      sameSite: "lax", // or "strict"
+      secure: true,    // ✅ important for HTTPS on Render
     },
   })
 );
