@@ -67,4 +67,7 @@ app.delete("/todos/:id", async (req, res) => {
   }
 });
 
-module.exports =app;
+app.listen(port, async () => {
+  await sequelize.sync();
+  console.log(`App running on http://localhost:${port}`);
+});
