@@ -106,13 +106,11 @@
       await fetch(`/todos/${id}`, {
         method: "DELETE",
         headers: {
-          "Content-Type": "application/json",
-          "_csrf": csrfToken,
+          "CSRF-Token": csrfToken,
         },
       });
       window.location.reload();
     }
-
     async function toggleCompleted(id) {
       const checkbox = document.getElementById(`todo-${id}`);
       const completed = checkbox.checked;
@@ -120,7 +118,7 @@
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "_csrf": csrfToken,
+          "CSRF-Token": csrfToken,
         },
         body: JSON.stringify({ completed }),
       });
