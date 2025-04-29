@@ -1,106 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Todo App</title>
-  <link rel="stylesheet" href="/css/styles.css" />
-<meta name="csrf-token" content="<%= csrfToken %>">
+<html>
+  <head>
+    <title>Todo Manager</title>
+    <meta name="csrf-token" content="<%= csrfToken %>">
+  </head>
+  <body>
+    <header>
+      <h1>Todo Manager</h1>
+    </header>
 
-</head>
-<body>
-  <%- include("header") %>
+    <form action="/todos" method="POST">
+      <input type="text" name="title" placeholder="Todo title" required />
+      <input type="date" name="dueDate" required />
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <button type="submit">Add</button>
+    </form>
 
-  <main>
-    <section>
-      <form action="/todos" method="POST">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-        <input type="text" name="title" placeholder="Enter todo title" required />
-        <input type="date" name="dueDate" required />
-        <button type="submit">Add Todo</button>
-      </form>
-    </section>
-
-    <% const renderTodos = (todos) => { %>
-      <% todos.forEach(todo => { %>
-        <tr class="Todo-Item">
-          <td>
-            <label>
-              <input
-                type="checkbox"
-                onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)"
-                <%= todo.completed ? 'checked' : '' %>
-              />
-              <%= todo.title %> - <%= todo.dueDate %>
-            </label>
-          </td>
-          <td>
-            <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
-          </td>
-        </tr>
+    <h2>Overdue (<span id="overdue-count"><%= overdue.length %></span>)</h2>
+    <ul>
+      <% overdue.forEach(todo => { %>
+        <li>
+          <input type="checkbox" onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)" />
+          <%= todo.title %> (Due: <%= todo.dueDate %>)
+          <button onclick="deleteTodo(<%= todo.id %>)">🗑</button>
+        </li>
       <% }) %>
-    <% } %>
+    </ul>
 
-    <section>
-      <h2>Overdue</h2>
-      <p id="count-overdue"><%= overdue.length %> overdue tasks</p>
-      <table><tbody><%= renderTodos(overdue) %></tbody></table>
-    </section>
+    <h2>Due Today (<span id="due-today-count"><%= dueToday.length %></span>)</h2>
+    <ul>
+      <% dueToday.forEach(todo => { %>
+        <li>
+          <input type="checkbox" onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)" />
+          <%= todo.title %>
+          <button onclick="deleteTodo(<%= todo.id %>)">🗑</button>
+        </li>
+      <% }) %>
+    </ul>
 
-    <section>
-      <h2>Due Today</h2>
-      <p id="count-due-today"><%= dueToday.length %> tasks due today</p>
-      <table><tbody><%= renderTodos(dueToday) %></tbody></table>
-    </section>
+    <h2>Due Later (<span id="due-later-count"><%= dueLater.length %></span>)</h2>
+    <ul>
+      <% dueLater.forEach(todo => { %>
+        <li>
+          <input type="checkbox" onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)" />
+          <%= todo.title %> (Due: <%= todo.dueDate %>)
+          <button onclick="deleteTodo(<%= todo.id %>)">🗑</button>
+        </li>
+      <% }) %>
+    </ul>
 
-    <section>
-      <h2>Due Later</h2>
-      <p id="count-due-later"><%= dueLater.length %> tasks due later</p>
-      <table><tbody><%= renderTodos(dueLater) %></tbody></table>
-    </section>
+    <h2>Completed (<span id="completed-count"><%= completed.length %></span>)</h2>
+    <ul>
+      <% completed.forEach(todo => { %>
+        <li>
+          <input type="checkbox" checked onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)" />
+          <s><%= todo.title %></s>
+          <button onclick="deleteTodo(<%= todo.id %>)">🗑</button>
+        </li>
+      <% }) %>
+    </ul>
 
-    <section>
-      <h2>Completed</h2>
-      <p id="count-completed"><%= completedItems.length %> completed tasks</p>
-      <table><tbody><%= renderTodos(completedItems) %></tbody></table>
-    </section>
-  </main>
+    <footer>© 2025 Your Name</footer>
 
-  <%- include("footer") %>
+    <script>
+      function getCsrfToken() {
+        return document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+      }
 
-  <script>
-  // Function to get CSRF token from meta tag
-  function getCsrfToken() {
-    return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-  }
+      async function toggleCompleted(id, currentStatus) {
+        const csrfToken = getCsrfToken();
+        await fetch(`/todos/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": csrfToken,
+          },
+        });
+        window.location.reload();
+      }
 
-  // Function to delete a Todo item
-  async function deleteTodo(id) {
-    const csrfToken = getCsrfToken();
-    await fetch(`/todos/${id}`, {
-      method: "DELETE",
-      headers: {
-        "X-CSRF-Token": csrfToken,
-      },
-    });
-    window.location.reload();
-  }
-
-  // Function to toggle the completion status of a Todo item
-  async function toggleCompleted(id, currentStatus) {
-    const csrfToken = getCsrfToken();
-    await fetch(`/todos/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-Token": csrfToken,
-      },
-      body: JSON.stringify({
-        completed: !currentStatus,
-      }),
-    });
-    window.location.reload();
-  }
-</script>
-
-</body>
+      async function deleteTodo(id) {
+        const csrfToken = getCsrfToken();
+        await fetch(`/todos/${id}`, {
+          method: "DELETE",
+          headers: {
+            "X-CSRF-Token": csrfToken,
+          },
+        });
+        window.location.reload();
+      }
+    </script>
+  </body>
 </html>
