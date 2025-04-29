@@ -29,7 +29,7 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)" />
+                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="toggleCompleted(<%= todo.id %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -50,13 +50,7 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input
-  type="checkbox"
-  id="todo-<%= todo.id %>"
-  <%= todo.completed ? 'checked' : '' %>
-  onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)"
-/>
-
+                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="toggleCompleted(<%= todo.id %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -77,13 +71,7 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-               <input
-  type="checkbox"
-  id="todo-<%= todo.id %>"
-  <%= todo.completed ? 'checked' : '' %>
-  onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)"
-/>
-
+                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="toggleCompleted(<%= todo.id %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -104,13 +92,7 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input
-  type="checkbox"
-  id="todo-<%= todo.id %>"
-  <%= todo.completed ? 'checked' : '' %>
-  onchange="toggleCompleted(<%= todo.id %>, <%= todo.completed %>)"
-/>
-
+                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="toggleCompleted(<%= todo.id %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -121,43 +103,41 @@
         <% }) %>
       </table>
     </section>
-
   </main>
 
   <%- include('footer') %>
 
   <script>
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-  async function deleteTodo(id) {
-    await fetch(`/todos/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "csrf-token": csrfToken
-      },
-    });
-    window.location.reload();
-  }
+    async function deleteTodo(id) {
+      await fetch(`/todos/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "csrf-token": csrfToken
+        },
+        credentials: "same-origin" 
+      });
+      window.location.reload();
+    }
 
-  async function toggleCompleted(id) {
-    const checkbox = document.getElementById(`todo-${id}`);
-    const completed = checkbox.checked;
+    async function toggleCompleted(id) {
+      const checkbox = document.getElementById(`todo-${id}`);
+      const completed = checkbox.checked;
 
-    await fetch(`/todos/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "csrf-token": csrfToken
-      },
-      body: JSON.stringify({ completed })
-    });
+      await fetch(`/todos/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "csrf-token": csrfToken
+        },
+        body: JSON.stringify({ completed }),
+        credentials: "same-origin" 
+      });
 
-    window.location.reload();
-  }
-</script>
-
-
+      window.location.reload();
+    }
+  </script>
 </body>
 </html>
-
