@@ -8,8 +8,6 @@
 </head>
 <body>
   <h1>Todo List</h1>
-
-  <!-- Form to add a new Todo -->
   <form action="/todos" method="POST">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <input type="text" name="title" placeholder="Title" required>
@@ -17,61 +15,50 @@
     <button type="submit">Add Todo</button>
   </form>
 
-  <h2>Overdue</h2>
-  <ul>
-    <% overdue.forEach(todo => { %>
-      <li>
-        <%= todo.title %> - Due: <%= todo.dueDate %>
-        <form action="/todos/<%= todo.id %>?_method=PUT" method="POST">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <label for="completed">Completed:</label>
-          <input type="checkbox" name="completed" <%= todo.completed ? 'checked' : '' %> onchange="this.form.submit()">
-        </form>
-      </li>
-    <% }) %>
-  </ul>
+  <% const sections = [
+    { title: "Overdue", list: overdue },
+    { title: "Due Today", list: dueToday },
+    { title: "Due Later", list: dueLater },
+    { title: "Completed", list: completed }
+  ]; %>
 
-  <h2>Due Today</h2>
-  <ul>
-    <% dueToday.forEach(todo => { %>
-      <li>
-        <%= todo.title %> - Due: <%= todo.dueDate %>
-        <form action="/todos/<%= todo.id %>?_method=PUT" method="POST">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <label for="completed">Completed:</label>
-          <input type="checkbox" name="completed" <%= todo.completed ? 'checked' : '' %> onchange="this.form.submit()">
-        </form>
-      </li>
-    <% }) %>
-  </ul>
+  <% sections.forEach(section => { %>
+    <h2><%= section.title %></h2>
+    <ul class="list-none">
+      <% section.list.forEach(todo => { %>
+        <li class="Todo-Item">
+          <div class="flex items-center w-full my-2 px-2 py-1 rounded hover:bg-purple-50">
+            <input 
+              id="todo-checkbox-<%= todo.id %>" 
+              type="checkbox" 
+              <%= todo.completed ? 'checked' : '' %>
+              onchange="toggleTodo(<%= todo.id %>, this.checked)"
+              class="w-4 h-4 cursor-pointer"
+            />
+            <label 
+              for="todo-checkbox-<%= todo.id %>" 
+              class="ml-2 text-sm text-gray-600 cursor-pointer <%= todo.completed ? 'line-through' : '' %>"
+            >
+              <%= todo.title %> - Due: <%= todo.dueDate %>
+            </label>
 
-  <h2>Due Later</h2>
-  <ul>
-    <% dueLater.forEach(todo => { %>
-      <li>
-        <%= todo.title %> - Due: <%= todo.dueDate %>
-        <form action="/todos/<%= todo.id %>?_method=PUT" method="POST">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <label for="completed">Completed:</label>
-          <input type="checkbox" name="completed" <%= todo.completed ? 'checked' : '' %> onchange="this.form.submit()">
-        </form>
-      </li>
-    <% }) %>
-  </ul>
-
-  <h2>Completed</h2>
-  <ul>
-    <% completed.forEach(todo => { %>
-      <li>
-        <%= todo.title %> - Completed on: <%= todo.dueDate %>
-        <form action="/todos/<%= todo.id %>?_method=DELETE" method="POST">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <button type="submit">Delete</button>
-        </form>
-      </li>
-    <% }) %>
-  </ul>
+            <a 
+              href="javascript:void(0);" 
+              onclick="deleteTodo(<%= todo.id %>)" 
+              class="trash-icon ml-2 text-gray-500 hover:text-red-500"
+              title="Delete"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0l-.346-9m9.708-3.75H5.25m16.5 0a2.25 2.25 0 01-2.25 2.25h-13.5a2.25 2.25 0 01-2.25-2.25m16.5 0V5.25A2.25 2.25 0 0018.75 3h-13.5a2.25 2.25 0 00-2.25 2.25v.75" />
+              </svg>
+            </a>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+  <% }) %>
 
   <script src="/app.js"></script>
 </body>
 </html>
+
