@@ -1,62 +1,77 @@
 const express = require("express");
+const app = express();
 const csrf = require("tiny-csrf");
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
-const path = require("path");
 const { Todo } = require("./models");
-
-const app = express();
-const csrfSecret = "12345678901234567890123456789012"; // 32-char secret
+const path = require("path");
+const csrfSecret = "my-secret";
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cookieParser(csrfSecret));
 app.use(csrf(csrfSecret, ["POST", "PUT", "DELETE"]));
 
+// Make CSRF token available to all views
 app.use((req, res, next) => {
   res.locals.csrfToken = req.csrfToken();
   next();
 });
 
-// Home route
-app.get("/", async (req, res) => {
-  const allTodos = await Todo.findAll({ order: [["dueDate", "ASC"]] });
+// GET /todos - Show all todos
+app.get("/todos", async (req, res) => {
+  const todos = await Todo.findAll();
 
-  const overdue = allTodos.filter(todo => todo.dueDate < new Date().toISOString().slice(0, 10) && !todo.completed);
-  const dueToday = allTodos.filter(todo => todo.dueDate === new Date().toISOString().slice(0, 10) && !todo.completed);
-  const dueLater = allTodos.filter(todo => todo.dueDate > new Date().toISOString().slice(0, 10) && !todo.completed);
-  const completed = allTodos.filter(todo => todo.completed);
+  // Filter todos based on their due date
+  const overdue = todos.filter(todo => new Date(todo.dueDate) < new Date() && !todo.completed);
+  const dueToday = todos.filter(todo => new Date(todo.dueDate).toDateString() === new Date().toDateString() && !todo.completed);
+  const dueLater = todos.filter(todo => new Date(todo.dueDate) > new Date() && !todo.completed);
+  const completed = todos.filter(todo => todo.completed);
 
-  res.render("index", {
-    overdue,
-    dueToday,
-    dueLater,
-    completed,
-  });
+  res.render("todos/index", { overdue, dueToday, dueLater, completed });
 });
 
-// Create todo
+// POST /todos - Add a new todo
 app.post("/todos", async (req, res) => {
   const { title, dueDate } = req.body;
-  if (!title || !dueDate) return res.redirect("/");
 
-  await Todo.create({ title, dueDate, completed: false });
-  res.redirect("/");
+  if (!title || !dueDate) {
+    return res.status(400).send("Title and due date are required.");
+  }
+
+  await Todo.create({
+    title,
+    dueDate,
+    completed: false,
+  });
+
+  res.redirect("/todos");
 });
 
-// Toggle completed
+// PUT /todos/:id - Update the completion status of a todo
 app.put("/todos/:id", async (req, res) => {
+  const { completed } = req.body;
   const todo = await Todo.findByPk(req.params.id);
-  await todo.update({ completed: !todo.completed });
-  res.sendStatus(200);
+
+  if (todo) {
+    todo.completed = completed;
+    await todo.save();
+    res.status(200).json(todo);
+  } else {
+    res.status(404).send("Todo not found.");
+  }
 });
 
-// Delete
+// DELETE /todos/:id - Delete a todo
 app.delete("/todos/:id", async (req, res) => {
-  await Todo.destroy({ where: { id: req.params.id } });
-  res.sendStatus(200);
+  const todo = await Todo.findByPk(req.params.id);
+
+  if (todo) {
+    await todo.destroy();
+    res.status(200).send("Todo deleted.");
+  } else {
+    res.status(404).send("Todo not found.");
+  }
 });
 
 module.exports = app;
