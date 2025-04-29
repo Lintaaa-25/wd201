@@ -1,76 +1,74 @@
-const express = require("express");
-const csrf = require("tiny-csrf");
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
-const path = require("path");
-const { Todo, sequelize } = require("./models");
-
+const express = require('express');
+const path = require('path');
+const { Todo } = require('./models'); // Import your Todo model (adjust path as needed)
+const csrf = require('csurf');
 const app = express();
-const port = process.env.PORT || 3000;
 
-// CSRF secret (Must be 32 characters)
-const csrfSecret = "1234567890abcdef1234567890abcdef";
+// Middleware
+app.use(express.json()); // To handle JSON request bodies
+app.use(express.urlencoded({ extended: true })); // To handle form data
+app.use(csrf()); // CSRF protection
 
-// Middleware setup
-app.set("view engine", "ejs");
-app.use(express.static(path.join(__dirname, "public")));
-app.use(cookieParser(csrfSecret));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(csrf(csrfSecret, ["POST", "PUT", "DELETE"])); // Enable CSRF protection
+// Serve static files (CSS, JS)
+app.use(express.static(path.join(__dirname, 'public')));
 
-// CSRF token available in all views
-app.use((req, res, next) => {
-  res.locals.csrfToken = req.csrfToken(); // Set CSRF token for each request
-  next();
-});
+// Routes
 
 // Home page route
-app.get("/", async (req, res) => {
-  const allTodos = await Todo.findAll({ order: [["dueDate", "ASC"]] });
-  const today = new Date().toISOString().split("T")[0];
-
-  const overdue = allTodos.filter(todo => todo.dueDate < today && !todo.completed);
-  const dueToday = allTodos.filter(todo => todo.dueDate === today && !todo.completed);
-  const dueLater = allTodos.filter(todo => todo.dueDate > today && !todo.completed);
-  const completed = allTodos.filter(todo => todo.completed);
-
-  res.render("index", { overdue, dueToday, dueLater, completed, csrfToken: req.csrfToken() });
+app.get('/', async (req, res) => {
+  try {
+    const { overdue, dueToday, dueLater, completedItems } = await Todo.getTodos();
+    res.render('index', {
+      overdue,
+      dueToday,
+      dueLater,
+      completedItems,
+      csrfToken: req.csrfToken(), // Pass CSRF token to the front end
+    });
+  } catch (err) {
+    console.error("Error fetching todos:", err);
+    res.status(500).send("Server Error");
+  }
 });
 
-// POST add new todo
-app.post("/todos", async (req, res) => {
+// Add new Todo
+app.post('/todos', async (req, res) => {
   const { title, dueDate } = req.body;
   try {
-    await Todo.create({ title, dueDate, completed: false });
-    res.redirect("/"); // Redirect to home after adding a todo
-  } catch {
-    res.status(400).send("Error creating todo");
+    await Todo.addTodo({ title, dueDate });
+    res.redirect('/'); // Redirect back to the homepage to show updated list
+  } catch (err) {
+    console.error("Error adding todo:", err);
+    res.status(500).send("Error adding Todo");
   }
 });
 
-// PUT update completion status
-app.put("/todos/:id", async (req, res) => {
+// Delete Todo
+app.delete('/todos/:id', async (req, res) => {
+  const { id } = req.params;
   try {
-    const todo = await Todo.findByPk(req.params.id);
-    if (!todo) return res.status(404).json({ error: "Todo not found" });
-
-    todo.completed = req.body.completed;
-    await todo.save();
-    res.json(todo);
-  } catch {
-    res.status(500).json({ error: "Failed to update todo" });
+    await Todo.remove(id);
+    res.status(200).send({ message: "Todo deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting todo:", err);
+    res.status(500).send("Error deleting Todo");
   }
 });
 
-// DELETE a todo
-app.delete("/todos/:id", async (req, res) => {
+// Toggle completed status of Todo
+app.put('/todos/:id', async (req, res) => {
+  const { id } = req.params;
+  const { completed } = req.body; // completed is true or false based on the checkbox state
   try {
-    await Todo.destroy({ where: { id: req.params.id } });
-    res.json({ success: true });
-  } catch {
-    res.status(500).json({ error: "Failed to delete todo" });
+    await Todo.setCompletionStatus(id, completed);
+    res.status(200).send({ message: "Todo status updated successfully" });
+  } catch (err) {
+    console.error("Error updating todo:", err);
+    res.status(500).send("Error updating Todo status");
   }
 });
+
+// Start server
 
 module.exports = app;
+
