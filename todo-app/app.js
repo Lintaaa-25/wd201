@@ -46,6 +46,7 @@ app.post("/todos", async (req, res) => {
 
 app.put("/todos/:id", async (req, res) => {
   try {
+    console.log("PUT body:",req.body);
     const { completed } = req.body;
     const todo = await Todo.setCompletionStatus(req.params.id, completed);
 
@@ -65,6 +66,7 @@ app.put("/todos/:id", async (req, res) => {
 
 app.delete("/todos/:id", async (req, res) => {
   try {
+    console.log("DELETE todo:",req.params.id);
     const deleted = await Todo.remove(req.params.id);
     res.json({ success: deleted ? true : false });
   } catch (err) {
