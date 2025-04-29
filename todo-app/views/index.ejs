@@ -1,64 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Todo App</title>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <h1>Todo List</h1>
-  <form action="/todos" method="POST">
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <input type="text" name="title" placeholder="Title" required>
-    <input type="date" name="dueDate" required>
-    <button type="submit">Add Todo</button>
-  </form>
+  <div class="container">
+    <h1>Todo List</h1>
 
-  <% const sections = [
-    { title: "Overdue", list: overdue },
-    { title: "Due Today", list: dueToday },
-    { title: "Due Later", list: dueLater },
-    { title: "Completed", list: completed }
-  ]; %>
+    <!-- Form to Add a New Todo -->
+    <form action="/todos" method="POST" class="todo-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <input type="text" name="title" placeholder="Todo title" required />
+      <input type="date" name="dueDate" required />
+      <button type="submit">Add Todo</button>
+    </form>
 
-  <% sections.forEach(section => { %>
-    <h2><%= section.title %></h2>
-    <ul class="list-none">
-      <% section.list.forEach(todo => { %>
-        <li class="Todo-Item">
-          <div class="flex items-center w-full my-2 px-2 py-1 rounded hover:bg-purple-50">
-            <input 
-              id="todo-checkbox-<%= todo.id %>" 
-              type="checkbox" 
-              <%= todo.completed ? 'checked' : '' %>
-              onchange="toggleTodo(<%= todo.id %>, this.checked)"
-              class="w-4 h-4 cursor-pointer"
-            />
-            <label 
-              for="todo-checkbox-<%= todo.id %>" 
-              class="ml-2 text-sm text-gray-600 cursor-pointer <%= todo.completed ? 'line-through' : '' %>"
-            >
-              <%= todo.title %> - Due: <%= todo.dueDate %>
-            </label>
+    <% function renderTodos(title, todos) { %>
+      <h2><%= title %></h2>
+      <ul class="list-none">
+        <% todos.forEach(todo => { %>
+          <li class="Todo-Item">
+            <div class="flex items-center w-full my-2 px-2 py-1 rounded hover:bg-purple-50">
+              <input 
+                id="todo-checkbox-<%= todo.id %>" 
+                type="checkbox" 
+                <%= todo.completed ? 'checked' : '' %> 
+                onclick="toggleTodo(<%= todo.id %>, <%= !todo.completed %>)" 
+                class="w-4 h-4"
+              />
+              <label for="todo-checkbox-<%= todo.id %>" class="ml-2 text-sm text-gray-600 cursor-pointer">
+                <%= todo.title %> - Due: <%= todo.dueDate %>
+              </label>
+              <a 
+                href="javascript:void(0);" 
+                onclick="deleteTodo(<%= todo.id %>)" 
+                class="ml-3 text-red-500 hover:text-red-700"
+              >
+                🗑️
+              </a>
+            </div>
+          </li>
+        <% }); %>
+      </ul>
+    <% } %>
 
-            <a 
-              href="javascript:void(0);" 
-              onclick="deleteTodo(<%= todo.id %>)" 
-              class="trash-icon ml-2 text-gray-500 hover:text-red-500"
-              title="Delete"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0l-.346-9m9.708-3.75H5.25m16.5 0a2.25 2.25 0 01-2.25 2.25h-13.5a2.25 2.25 0 01-2.25-2.25m16.5 0V5.25A2.25 2.25 0 0018.75 3h-13.5a2.25 2.25 0 00-2.25 2.25v.75" />
-              </svg>
-            </a>
-          </div>
-        </li>
-      <% }) %>
-    </ul>
-  <% }) %>
+    <% renderTodos("Overdue", overdue); %>
+    <% renderTodos("Due Today", dueToday); %>
+    <% renderTodos("Due Later", dueLater); %>
+    <% renderTodos("Completed", completed); %>
+  </div>
 
-  <script src="/app.js"></script>
+  <script>
+    const csrfToken = "<%= csrfToken %>";
+
+    function toggleTodo(id, completed) {
+      fetch(`/todos/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken
+        },
+        body: JSON.stringify({ completed })
+      }).then(() => window.location.reload());
+    }
+
+    function deleteTodo(id) {
+      fetch(`/todos/${id}`, {
+        method: "DELETE",
+        headers: {
+          "X-CSRF-Token": csrfToken
+        }
+      }).then(() => window.location.reload());
+    }
+  </script>
 </body>
 </html>
-
