@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const { Todo } = require("./models");
 const path = require("path");
-const csrfSecret = "your32characterrandomsecretkey__";
+const csrfSecret = "your32characterrandomsecretkey12";
 
 app.set("view engine", "ejs");
 app.use(cookieParser(csrfSecret));
