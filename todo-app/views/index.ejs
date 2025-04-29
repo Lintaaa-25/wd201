@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <title>Todo App</title>
   <link rel="stylesheet" href="/css/styles.css" />
+<meta name="csrf-token" content="<%= csrfToken %>">
+
 </head>
 <body>
   <%- include("header") %>
@@ -66,29 +68,39 @@
   <%- include("footer") %>
 
   <script>
-    const csrfToken = "<%= csrfToken %>";
+  // Function to get CSRF token from meta tag
+  function getCsrfToken() {
+    return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  }
 
-    async function deleteTodo(id) {
-      await fetch(`/todos/${id}`, {
-        method: "DELETE",
-        headers: {
-          "X-CSRF-Token": csrfToken
-        }
-      });
-      window.location.reload();
-    }
+  // Function to delete a Todo item
+  async function deleteTodo(id) {
+    const csrfToken = getCsrfToken();
+    await fetch(`/todos/${id}`, {
+      method: "DELETE",
+      headers: {
+        "X-CSRF-Token": csrfToken,
+      },
+    });
+    window.location.reload();
+  }
 
-    async function toggleCompleted(id, currentStatus) {
-      await fetch(`/todos/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": csrfToken
-        },
-        body: JSON.stringify({ completed: !currentStatus })
-      });
-      window.location.reload();
-    }
-  </script>
+  // Function to toggle the completion status of a Todo item
+  async function toggleCompleted(id, currentStatus) {
+    const csrfToken = getCsrfToken();
+    await fetch(`/todos/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken,
+      },
+      body: JSON.stringify({
+        completed: !currentStatus,
+      }),
+    });
+    window.location.reload();
+  }
+</script>
+
 </body>
 </html>
