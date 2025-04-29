@@ -11,14 +11,20 @@ const csrfSecret = "1234567890abcdef1234567890abcdef"; // 32 chars
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
+
+
 app.use(cookieParser(csrfSecret));
+
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+
 app.use(csrf(csrfSecret, ["POST", "PUT", "DELETE"]));
 
-// Make CSRF token available to all views
+
 app.use((req, res, next) => {
-  res.locals.csrfToken = req.csrfToken();
+  res.locals.csrfToken = req.csrfToken(); // Only works if called after csrf middleware
   next();
 });
 
