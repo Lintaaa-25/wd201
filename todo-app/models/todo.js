@@ -1,4 +1,3 @@
-// models/todo.js
 "use strict";
 const { Model } = require("sequelize");
 
@@ -14,8 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       return await this.findAll({ order: [["id", "ASC"]] });
     }
 
-    setCompletionStatus(status) {
-      return this.update({ completed: status });
+    // Set completion status
+    async setCompletionStatus(status) {
+      this.completed = status;
+      return await this.save();  // Ensure the status is saved after update
     }
 
     static async remove(id) {
@@ -32,9 +33,11 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static async dueToday() {
+      // Handle today’s date in a cleaner way
+      const today = new Date().toISOString().split("T")[0];
       return this.findAll({
         where: {
-          dueDate: new Date().toISOString().split("T")[0],
+          dueDate: today,
           completed: false,
         },
       });
