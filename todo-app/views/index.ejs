@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Todo App</title>
-  <meta name="csrf-token" content="<%= csrfToken %>">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <h1>Todo App</h1>
+  <h1>Todo List</h1>
 
+  <!-- Form to add a new Todo -->
   <form action="/todos" method="POST">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
     <input type="text" name="title" placeholder="Title" required>
@@ -18,9 +21,12 @@
   <ul>
     <% overdue.forEach(todo => { %>
       <li>
-        <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : "" %> onclick="toggleCompleted(<%= todo.id %>)">
-        <%= todo.title %> (Due: <%= todo.dueDate %>)
-        <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+        <%= todo.title %> - Due: <%= todo.dueDate %>
+        <form action="/todos/<%= todo.id %>?_method=PUT" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <label for="completed">Completed:</label>
+          <input type="checkbox" name="completed" <%= todo.completed ? 'checked' : '' %> onchange="this.form.submit()">
+        </form>
       </li>
     <% }) %>
   </ul>
@@ -29,9 +35,12 @@
   <ul>
     <% dueToday.forEach(todo => { %>
       <li>
-        <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : "" %> onclick="toggleCompleted(<%= todo.id %>)">
-        <%= todo.title %>
-        <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+        <%= todo.title %> - Due: <%= todo.dueDate %>
+        <form action="/todos/<%= todo.id %>?_method=PUT" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <label for="completed">Completed:</label>
+          <input type="checkbox" name="completed" <%= todo.completed ? 'checked' : '' %> onchange="this.form.submit()">
+        </form>
       </li>
     <% }) %>
   </ul>
@@ -40,9 +49,12 @@
   <ul>
     <% dueLater.forEach(todo => { %>
       <li>
-        <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : "" %> onclick="toggleCompleted(<%= todo.id %>)">
-        <%= todo.title %> (Due: <%= todo.dueDate %>)
-        <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+        <%= todo.title %> - Due: <%= todo.dueDate %>
+        <form action="/todos/<%= todo.id %>?_method=PUT" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <label for="completed">Completed:</label>
+          <input type="checkbox" name="completed" <%= todo.completed ? 'checked' : '' %> onchange="this.form.submit()">
+        </form>
       </li>
     <% }) %>
   </ul>
@@ -51,37 +63,15 @@
   <ul>
     <% completed.forEach(todo => { %>
       <li>
-        ✅ <%= todo.title %> (Due: <%= todo.dueDate %>)
-        <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+        <%= todo.title %> - Completed on: <%= todo.dueDate %>
+        <form action="/todos/<%= todo.id %>?_method=DELETE" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button type="submit">Delete</button>
+        </form>
       </li>
     <% }) %>
   </ul>
 
-  <script>
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-    async function deleteTodo(id) {
-      await fetch(`/todos/${id}`, {
-        method: "DELETE",
-        headers: { "CSRF-Token": csrfToken },
-        credentials: "same-origin"
-      });
-      window.location.reload();
-    }
-
-    async function toggleCompleted(id) {
-      const checkbox = document.getElementById(`todo-${id}`);
-      await fetch(`/todos/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "CSRF-Token": csrfToken
-        },
-        credentials: "same-origin",
-        body: JSON.stringify({ completed: checkbox.checked })
-      });
-      window.location.reload();
-    }
-  </script>
+  <script src="/app.js"></script>
 </body>
 </html>
