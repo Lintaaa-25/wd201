@@ -11,6 +11,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser(secret));
 app.use(csrf(secret, ["POST", "PUT", "DELETE"]));
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 
