@@ -1,8 +1,18 @@
-const env = process.env.NODE_ENV || "development";
-const config = require(__dirname + "/../config/config.json")[env];
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
+require('dotenv').config();  // if you're using .env
 
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
+// Select the environment (development, test, or production)
+const env = process.env.NODE_ENV || 'development';
+
+// Use environment variable DATABASE_URL if available, otherwise use config.json
+const config = process.env.DATABASE_URL || require(__dirname + '/../config/config.json')[env];
+
+const sequelize = new Sequelize(config, {
+  dialect: 'postgres',
+  protocol: 'postgres',
+  logging: false,
+});
+
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
