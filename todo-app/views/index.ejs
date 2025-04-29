@@ -127,37 +127,36 @@
   <%- include('footer') %>
 
   <script>
-    // Function to delete a Todo item
-   async function deleteTodo(id) {
   const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-  await fetch(`/todos/${id}`, {
-    method: "DELETE",
-    headers: {
-      "CSRF-Token": csrfToken
-    }
-  });
+  async function deleteTodo(id) {
+    await fetch(`/todos/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "CSRF-Token": csrfToken
+      },
+    });
+    window.location.reload();
+  }
 
-  window.location.reload();
-}
-    async function toggleCompleted(id, currentStatus) {
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  async function toggleCompleted(id) {
+    const checkbox = document.getElementById(`todo-${id}`);
+    const completed = checkbox.checked;
 
-  await fetch(`/todos/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      "CSRF-Token": csrfToken  
-    },
-    body: JSON.stringify({
-      completed: !currentStatus
-    }),
-  });
+    await fetch(`/todos/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "CSRF-Token": csrfToken
+      },
+      body: JSON.stringify({ completed })
+    });
 
-  window.location.reload();
-}
+    window.location.reload();
+  }
+</script>
 
-  </script>
 
 </body>
 </html>
