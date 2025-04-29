@@ -1,10 +1,9 @@
 // models/index.js
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "todos.db",
-});
+const config = require(__dirname + '/../config/config.json')[env];
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
+
 
 const db = {};
 db.Sequelize = Sequelize;
