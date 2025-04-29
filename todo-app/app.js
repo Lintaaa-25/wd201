@@ -1,16 +1,27 @@
-const express = require('express');
-const path = require('path');
-const { Todo } = require('./models'); // Import your Todo model (adjust path as needed)
-const csrf = require('csurf');
+const express = require("express");
+const csrf = require("tiny-csrf");
+const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+const path = require("path");
+const { Todo, sequelize } = require("./models");
+
 const app = express();
+const port = process.env.PORT || 3000;
 
-// Middleware
-app.use(express.json()); // To handle JSON request bodies
-app.use(express.urlencoded({ extended: true })); // To handle form data
-app.use(csrf()); // CSRF protection
+const csrfSecret = "1234567890abcdef1234567890abcdef"; // Must be 32 chars
 
-// Serve static files (CSS, JS)
-app.use(express.static(path.join(__dirname, 'public')));
+app.set("view engine", "ejs");
+app.use(express.static(path.join(__dirname, "public")));
+app.use(cookieParser(csrfSecret));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(csrf(csrfSecret, ["POST", "PUT", "DELETE"]));
+
+// CSRF token available in all views
+app.use((req, res, next) => {
+  res.locals.csrfToken = req.csrfToken(); // Making csrfToken available in views
+  next();
+});
 
 // Routes
 
