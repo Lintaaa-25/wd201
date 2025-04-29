@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Todo App</title>
   <link rel="stylesheet" href="/css/styles.css">
+  <meta name="csrf-token" content="<%= csrfToken %>">
 </head>
 <body>
   <%- include('header') %>
@@ -50,11 +51,11 @@
   </main>
 
   <%- include('footer') %>
+<script>
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-  <script>
-    const csrfToken = document.querySelector('input[name="_csrf"]').value;
-
-    async function deleteTodo(id) {
+  async function deleteTodo(id) {
+    try {
       await fetch(`/todos/${id}`, {
         method: "DELETE",
         headers: {
@@ -62,9 +63,13 @@
         },
       });
       window.location.reload();
+    } catch (err) {
+      console.error("Delete failed:", err);
     }
+  }
 
-    async function toggleCompleted(id, currentStatus) {
+  async function toggleCompleted(id, currentStatus) {
+    try {
       await fetch(`/todos/${id}`, {
         method: "PUT",
         headers: {
@@ -74,7 +79,12 @@
         body: JSON.stringify({ completed: !currentStatus }),
       });
       window.location.reload();
+    } catch (err) {
+      console.error("Toggle failed:", err);
     }
-  </script>
+  }
+</script>
+
+  
 </body>
 </html>
