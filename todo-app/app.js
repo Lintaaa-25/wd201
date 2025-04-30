@@ -4,18 +4,20 @@ const path = require("path");
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const csrf = require("tiny-csrf");
+const csrf = require("csurf");
 
+// Middleware setup
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser("w89R7nfpK2tUvXA3YeLg51BZqmJcHd6o"));
-app.use(csrf("w89R7nfpK2tUvXA3YeLg51BZqmJcHd6o"));
-app.use(express.static(path.join(__dirname, "public")));
 
+// Set up CSRF protection
+app.use(csrf({ cookie: true }));
+
+app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 
 // Routes
-
 app.get("/", async (req, res) => {
   const todos = await Todo.getTodos();
   res.render("index", {
