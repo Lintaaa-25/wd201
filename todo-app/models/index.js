@@ -5,5 +5,8 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
     ? { ssl: { require: true, rejectUnauthorized: false } }
     : {},
 });
-const Todo = require("./todo")(sequelize);
+
+const TodoModel = require("./todo");
+const Todo = TodoModel(sequelize, Sequelize.DataTypes); // Pass DataTypes here
+
 module.exports = { sequelize, Todo };
