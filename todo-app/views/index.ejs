@@ -11,11 +11,12 @@
   <main>
     <section>
       <form action="/todos" method="POST">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-        <input type="text" name="title" placeholder="Enter todo title" required />
-        <input type="date" name="dueDate" required />
-        <button type="submit">Add Todo</button>
-      </form>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  <input type="text" name="title" id="title" placeholder="Enter todo title" required />
+  <input type="date" name="dueDate" id="dueDate" required />
+  <button type="submit" id="submit">Add Todo</button>
+</form>
+
     </section>
 
     <section>
