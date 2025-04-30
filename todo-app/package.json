@@ -8,20 +8,20 @@
     "start:prod": "NODE_ENV=production node index.js",
     "test": "jest"
   },
-  "author": "linta",
+  "author": "Your Name",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
     "csurf": "^1.11.0",
-    "tiny-csrf": "^1.1.6",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-flash": "^0.0.2",
     "express-session": "^1.17.3",
     "pg": "^8.11.3",
     "sequelize": "^6.32.1",
-    "connect-session-sequelize": "^7.1.5"
+    "connect-session-sequelize": "^7.1.5",
+    "tiny-csrf": "^0.2.5"
   },
   "devDependencies": {
     "jest": "^29.7.0",
@@ -29,4 +29,3 @@
     "sequelize-cli": "^6.6.1"
   }
 }
-
