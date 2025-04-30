@@ -1,46 +1,88 @@
-const { DataTypes } = require("sequelize");
+"use strict";
+const { Model, Op } = require("sequelize");
 
-module.exports = (sequelize) => {
-  const Todo = sequelize.define("Todo", {
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: { msg: "Title must not be empty" },
+module.exports = (sequelize, DataTypes) => {
+  class Todo extends Model {
+    static async addTodo({ title, dueDate }) {
+      return await Todo.create({ title, dueDate, completed: false });
+    }
+
+    static async getTodos() {
+      const today = new Date().toISOString().split("T")[0];
+
+      const overdue = await Todo.findAll({
+        where: {
+          dueDate: { [Op.lt]: today },
+          completed: false,
+        },
+        order: [["dueDate", "ASC"]],
+      });
+
+      const dueToday = await Todo.findAll({
+        where: {
+          dueDate: { [Op.eq]: today },
+          completed: false,
+        },
+        order: [["dueDate", "ASC"]],
+      });
+
+      const dueLater = await Todo.findAll({
+        where: {
+          dueDate: { [Op.gt]: today },
+          completed: false,
+        },
+        order: [["dueDate", "ASC"]],
+      });
+
+      const completedItems = await Todo.findAll({
+        where: {
+          completed: true,
+        },
+        order: [["dueDate", "ASC"]],
+      });
+
+      return { overdue, dueToday, dueLater, completedItems };
+    }
+
+    static async remove(id) {
+      return await Todo.destroy({ where: { id } });
+    }
+
+    static async updateTodo(id, updatedFields) {
+      return await Todo.update(updatedFields, { where: { id } });
+    }
+
+    async setCompletionStatus(status) {
+      return this.update({ completed: status });
+    }
+  }
+
+  Todo.init(
+    {
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      dueDate: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+      },
+      completed: {
+        type: DataTypes.BOOLEAN,
       },
     },
-    dueDate: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-      validate: {
-        notEmpty: { msg: "Due date is required" },
-        isDate: { msg: "Must be a valid date" },
-      },
-    },
-    completed: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-  });
-
-  // Method to update completion status
-  Todo.prototype.setCompletionStatus = async function (status) {
-    this.completed = status;
-    await this.save();
-  };
-
-  // Group todos into four categories
-  Todo.groupTodos = async function () {
-    const todos = await Todo.findAll({ order: [["dueDate", "ASC"]] });
-    const today = new Date().toISOString().split("T")[0];
-
-    return {
-      overdue: todos.filter((todo) => !todo.completed && todo.dueDate < today),
-      dueToday: todos.filter((todo) => !todo.completed && todo.dueDate === today),
-      dueLater: todos.filter((todo) => !todo.completed && todo.dueDate > today),
-      completedItems: todos.filter((todo) => todo.completed),
-    };
-  };
+    {
+      sequelize,
+      modelName: "Todo",
+    }
+  );
 
   return Todo;
 };
+
