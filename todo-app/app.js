@@ -10,8 +10,12 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser("secret123"));
-app.use(csrf("secret123", ["POST", "PUT", "DELETE"]));
+
+// 32-character secret key
+const csrfSecret = "b7f3e6a2c1d9f0a4e8b7d6c3a1f2e4b9";
+
+app.use(cookieParser(csrfSecret));
+app.use(csrf(csrfSecret, ["POST", "PUT", "DELETE"]));
 
 function validateTodo(title, dueDate) {
   return title?.trim() && dueDate?.trim();
@@ -48,3 +52,4 @@ app.delete("/todos/:id", async (req, res) => {
 });
 
 module.exports = app;
+
