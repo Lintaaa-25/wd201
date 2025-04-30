@@ -1,62 +1,112 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Todo App</title>
+  <meta charset="UTF-8">
+  <title>My Todo App</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <form method="POST" action="/todos" onsubmit="return validateForm()">
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <input type="text" name="title" placeholder="Title">
-    <input type="date" name="dueDate">
-    <button type="submit">Add Todo</button>
-  </form>
+  <header>
+    <h1>My Todo App</h1>
+  </header>
 
-  <script>
-    function validateForm() {
-      const title = document.querySelector("[name='title']").value.trim();
-      const dueDate = document.querySelector("[name='dueDate']").value.trim();
-      if (!title || !dueDate) {
-        alert("Title and Due Date required");
-        return false;
-      }
-      return true;
-    }
+  <main>
+    <form method="POST" action="/todos" id="todo-form">
+      <input type="text" name="title" placeholder="Todo title" required />
+      <input type="date" name="dueDate" required />
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <button type="submit" class="add-btn" type="submit">Add Todo</button>
+    </form>
 
-    function toggleStatus(id, checked) {
-      fetch(`/todos/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ completed: checked })
-      }).then(() => location.reload());
-    }
-
-    function deleteTodo(id) {
-      fetch(`/todos/${id}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" }
-      }).then(() => location.reload());
-    }
-  </script>
-
-  <% function renderSection(title, id, todos) { %>
-    <h3><%= title %> (<span id="count-<%= id %>"><%= todos.length %></span>)</h3>
+    <h2>Overdue (<span id="count-overdue"><%= overdue.length %></span>)</h2>
     <ul>
-      <% todos.forEach(todo => { %>
+      <% overdue.forEach(todo => { %>
         <li class="Todo-Item">
           <label for="todo-<%= todo.id %>">
-            <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : "" %>
-              onchange="toggleStatus(<%= todo.id %>, this.checked)">
+            <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : "" %> onclick="toggleCompletion(<%= todo.id %>, this.checked)" />
             <%= todo.title %> - <%= todo.dueDate %>
           </label>
           <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
         </li>
       <% }) %>
     </ul>
-  <% } %>
 
-  <% renderSection("Overdue", "overdue", overdue) %>
-  <% renderSection("Due Today", "due-today", dueToday) %>
-  <% renderSection("Due Later", "due-later", dueLater) %>
-  <% renderSection("Completed Items", "completed", completed) %>
+    <h2>Due Today (<span id="count-due-today"><%= dueToday.length %></span>)</h2>
+    <ul>
+      <% dueToday.forEach(todo => { %>
+        <li class="Todo-Item">
+          <label for="todo-<%= todo.id %>">
+            <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : "" %> onclick="toggleCompletion(<%= todo.id %>, this.checked)" />
+            <%= todo.title %> - <%= todo.dueDate %>
+          </label>
+          <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+        </li>
+      <% }) %>
+    </ul>
+
+    <h2>Due Later (<span id="count-due-later"><%= dueLater.length %></span>)</h2>
+    <ul>
+      <% dueLater.forEach(todo => { %>
+        <li class="Todo-Item">
+          <label for="todo-<%= todo.id %>">
+            <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? "checked" : "" %> onclick="toggleCompletion(<%= todo.id %>, this.checked)" />
+            <%= todo.title %> - <%= todo.dueDate %>
+          </label>
+          <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+        </li>
+      <% }) %>
+    </ul>
+
+    <h2>Completed Items (<span id="count-completed"><%= completedItems.length %></span>)</h2>
+    <ul>
+      <% completedItems.forEach(todo => { %>
+        <li class="Todo-Item">
+          <label for="todo-<%= todo.id %>">
+            <input type="checkbox" id="todo-<%= todo.id %>" checked onclick="toggleCompletion(<%= todo.id %>, this.checked)" />
+            <%= todo.title %> - <%= todo.dueDate %>
+          </label>
+          <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+        </li>
+      <% }) %>
+    </ul>
+  </main>
+
+  <footer>
+    <p>© 2025 My Todo App</p>
+  </footer>
+
+  <script>
+    async function toggleCompletion(id, completed) {
+      await fetch(`/todos/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "CSRF-Token": "<%= csrfToken %>"
+        },
+        body: JSON.stringify({ completed })
+      });
+      window.location.reload();
+    }
+
+    async function deleteTodo(id) {
+      await fetch(`/todos/${id}`, {
+        method: "DELETE",
+        headers: {
+          "CSRF-Token": "<%= csrfToken %>"
+        }
+      });
+      window.location.reload();
+    }
+
+    // Client-side validation
+    document.getElementById("todo-form").addEventListener("submit", function(e) {
+      const title = document.querySelector("[name='title']").value.trim();
+      const dueDate = document.querySelector("[name='dueDate']").value.trim();
+      if (!title || !dueDate) {
+        e.preventDefault();
+        alert("Both title and due date are required!");
+      }
+    });
+  </script>
 </body>
 </html>
