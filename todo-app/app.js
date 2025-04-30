@@ -8,8 +8,8 @@ const csrf = require("tiny-csrf");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cookieParser("thisissecret"));
-app.use(csrf("thisissecret"));
+app.use(cookieParser("w89R7nfpK2tUvXA3YeLg51BZqmJcHd6o"));
+app.use(csrf("w89R7nfpK2tUvXA3YeLg51BZqmJcHd6o"));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
