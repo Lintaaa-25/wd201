@@ -31,19 +31,19 @@ app.get("/", async (req, res) => {
 
 app.post("/todos", async (req, res) => {
   try {
-    if (!req.body.title || !req.body.dueDate) {
+    const { title, dueDate } = req.body;
+    if (!title || title.trim() === "" || !dueDate || dueDate.trim() === "") {
       return res.status(400).send("Title and DueDate are required");
     }
-    await Todo.addTodo({
-      title: req.body.title,
-      dueDate: req.body.dueDate,
-    });
+
+    await Todo.addTodo({ title, dueDate });
     res.redirect("/");
   } catch (err) {
     console.error(err);
     res.status(422).send(err.message);
   }
 });
+
 
 app.put("/todos/:id", async (req, res) => {
   try {
