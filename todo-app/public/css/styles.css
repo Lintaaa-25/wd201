@@ -12,7 +12,7 @@ header, footer {
 }
 
 .Todo-Item:hover .trash-icon {
-    display: inline-block !important;
+    display: inline-block;
   }
 
 main {
