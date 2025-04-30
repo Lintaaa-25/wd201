@@ -130,7 +130,9 @@ window.location.reload(); // Reload the page to reflect changes
     
     })
     .then((res) => {
+      if(res.ok) {
        window.location.reload();
+}
   })
 .catch((err) => console.error(err));
  
