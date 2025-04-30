@@ -20,8 +20,7 @@
     "express-session": "^1.17.3",
     "pg": "^8.11.3",
     "sequelize": "^6.32.1",
-    "connect-session-sequelize": "^7.1.5",
-    "tiny-csrf": "^0.1.0"
+    "connect-session-sequelize": "^7.1.5"
   },
   "devDependencies": {
     "jest": "^29.7.0",
