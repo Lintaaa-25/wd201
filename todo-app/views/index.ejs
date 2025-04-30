@@ -27,7 +27,7 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" />
+                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" <% if(todo.completed) { %> checked <% } %> />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -47,7 +47,7 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" />
+                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" <% if(todo.completed) { %> checked <% } %> />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -67,7 +67,7 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" />
+                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" <% if(todo.completed) { %> checked <% } %> />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -87,7 +87,7 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" checked />
+                <input type="checkbox" id="todo-<%= todo.id %>" onchange="toggleTodo(<%= todo.id %>, this.checked)" <% if(todo.completed) { %> checked <% } %> />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
