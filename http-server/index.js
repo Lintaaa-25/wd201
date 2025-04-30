@@ -1,60 +1,41 @@
-window.onload = function () {
-  const dobInput = document.getElementById("dob");
-  const userForm = document.getElementById("user-form");
-  const entriesDiv = document.getElementById("user-entries");
-  const entries = JSON.parse(localStorage.getItem("userEntries")) || [];
+const http = require("http");
+const fs = require("fs");
+const minimist = require("minimist");
 
-  const today = new Date();
+const args = minimist(process.argv.slice(2));
+const PORT = args.port || 3000;
 
-  // Correct age boundaries based on year only
-  const minYear = today.getFullYear() - 55; // Accept all born in this year
-  const maxYear = today.getFullYear() - 18; // Accept all born up to this year
+let homeContent = "";
+let projectContent = "";
+let registrationContent = "";
 
-  const minDate = new Date(minYear, 0, 1);     // Jan 1, year 55 years ago
-  const maxDate = new Date(maxYear, 11, 31);   // Dec 31, year 18 years ago
+fs.readFile("home.html", (err, data) => {
+  if (err) throw err;
+  homeContent = data;
+});
 
-  const formatDate = (date) => date.toISOString().split("T")[0];
-  dobInput.min = formatDate(minDate);
-  dobInput.max = formatDate(maxDate);
+fs.readFile("project.html", (err, data) => {
+  if (err) throw err;
+  projectContent = data;
+});
 
-  // Show entries
-  const displayEntries = () => {
-    entriesDiv.innerHTML = "";
-    entries.forEach((entry, index) => {
-      const div = document.createElement("div");
-      div.className = "py-4";
+fs.readFile("registration.html", (err, data) => {
+  if (err) throw err;
+  registrationContent = data;
+});
 
-      div.innerHTML = `
-        <p><strong>Name:</strong> ${entry.name}</p>
-        <p><strong>Email:</strong> ${entry.email}</p>
-        <p><strong>Password:</strong> ${entry.password}</p>
-        <p><strong>DOB:</strong> ${entry.dob}</p>
-        <p><strong>Accepted Terms:</strong> ${entry.acceptedTerms ? "Yes" : "No"}</p>
-        <hr />
-      `;
-      entriesDiv.appendChild(div);
-    });
-  };
+http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "text/html" });
 
-  displayEntries();
+  if (req.url === "/project") {
+    res.write(projectContent);
+  } else if (req.url === "/registration") {
+    res.write(registrationContent);
+  } else {
+    res.write(homeContent);
+  }
 
-  // Handle form submission
-  userForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(userForm);
-    const entry = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      password: formData.get("password"),
-      dob: formData.get("dob"),
-      acceptedTerms: formData.get("acceptTerms") === "on",
-    };
-
-    // Save and display
-    entries.push(entry);
-    localStorage.setItem("userEntries", JSON.stringify(entries));
-    displayEntries();
-    userForm.reset();
-  });
-};
+  res.end();
+}).listen(PORT, () => {
+  console.log(Server running on port ${PORT});
+});  
