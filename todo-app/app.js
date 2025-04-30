@@ -12,7 +12,8 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // 32-character secret key
-const csrfSecret = "b7f3e6a2c1d9f0a4e8b7d6c3a1f2e4b9";
+
+const csrfSecret = "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6";
 
 app.use(cookieParser(csrfSecret));
 app.use(csrf(csrfSecret, ["POST", "PUT", "DELETE"]));
