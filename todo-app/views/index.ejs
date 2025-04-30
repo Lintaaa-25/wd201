@@ -21,7 +21,7 @@
 
     <section>
       <h2>Overdue</h2>
-      <p id="count-overdue"><%= overdue.length %> overdue tasks</p>
+      <p id="overdue-count"><%= overdue.length %> overdue tasks</p>
       <table>
         <% overdue.forEach(todo => { %>
           <tr class="Todo-Item">
@@ -41,7 +41,7 @@
 
     <section>
       <h2>Due Today</h2>
-      <p id="count-due-today"><%= dueToday.length %> tasks due today</p>
+      <p id="due-today-count"><%= dueToday.length %> tasks due today</p>
       <table>
         <% dueToday.forEach(todo => { %>
           <tr class="Todo-Item">
@@ -61,7 +61,7 @@
 
     <section>
       <h2>Due Later</h2>
-      <p id="count-due-later"><%= dueLater.length %> tasks due later</p>
+      <p id="due-later-count"><%= dueLater.length %> tasks due later</p>
       <table>
         <% dueLater.forEach(todo => { %>
           <tr class="Todo-Item">
@@ -81,7 +81,7 @@
 
     <section>
       <h2>Completed</h2>
-      <p id="count-completed"><%= completedItems.length %> completed tasks</p>
+      <p id="completed-count"><%= completedItems.length %> completed tasks</p>
       <table>
         <% completedItems.forEach(todo => { %>
           <tr class="Todo-Item">
