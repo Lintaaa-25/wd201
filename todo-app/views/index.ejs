@@ -132,7 +132,8 @@
     function deleteTodo(id) {
       fetch(`/todos/${id}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+"X-CSRF-Token": csrfToken },
       })
       .then((res) => {
 if (res.ok) {
@@ -146,7 +147,9 @@ window.location.reload(); // Reload the page to reflect changes
    fetch(`/todos/${id}/markAsCompleted`, {
     method: "PUT",
     headers: {
-      "Content-Type": "application/json" },
+      "Content-Type": "application/json",
+       "X-CSRF-Token": csrfToken
+},
     
     })
     .then((res) => {
