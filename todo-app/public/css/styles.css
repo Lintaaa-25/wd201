@@ -11,6 +11,10 @@ header, footer {
   text-align: center;
 }
 
+.Todo-Item:hover .trash-icon {
+    display: block;
+  }
+
 main {
   margin-top: 20px;
 }
