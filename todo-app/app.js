@@ -56,15 +56,6 @@ app.put("/todos/:id/markAsCompleted", async (req, res) => {
     }
 });
 
-app.put("/todos/:id", async (req, res) => {
-  try {
-    const todo = await Todo.findByPk(req.params.id);
-    const updatedTodo = await todo.update({ completed: req.body.completed });
-    return res.json(updatedTodo);
-  } catch (err) {
-    return res.status(422).json(err);
-  }
-});
 
 
 app.delete("/todos/:id", async (req, res) => {
@@ -78,3 +69,4 @@ app.delete("/todos/:id", async (req, res) => {
 });
 
 module.exports = app;
+
