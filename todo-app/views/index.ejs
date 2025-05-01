@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Todo App</title>
   <link rel="stylesheet" href="/css/styles.css">
+  <meta name="csrf-token" content="<%= csrfToken %>">
 </head>
 <body>
   <%- include('header') %>
@@ -125,11 +126,12 @@
   function updateTodo(id) {
     const checkbox = document.getElementById(`todo-${id}`);
     const isCompleted = checkbox.checked;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
   fetch(`/todos/${id}/markAsCompleted`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "CSRF-Token": "<%= csrfToken %>"
+      "CSRF-Token": csrfToken
 },
 body: JSON.stringify({ completed: isCompleted })
     })
