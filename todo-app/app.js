@@ -59,7 +59,7 @@ app.put("/todos/:id/markAsCompleted", async (req, res) => {
 
 
 app.delete("/todos/:id", async (req, res) => {
-  console.log('Delete a todo by ID: ", req.params.id);
+  console.log("Delete a todo by ID: ", req.params.id);
   try {
     await Todo.remove(req.params.id);
     return res.json({ success: true});
