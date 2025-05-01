@@ -109,12 +109,18 @@
 
   <script>
     // Function to delete a Todo item
-    async function deleteTodo(id) {
-      await fetch(`/todos/${id}`, {
+    function deleteTodo(id) {
+      fetch(`/todos/${id}`, {
         method: "DELETE",
-      });
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((res) => {
+        if (res.ok) {
       window.location.reload(); // Reload the page to reflect changes
     }
+   })
+   .catch((err) => console.error(err));
+}
 
     async function toggleCompleted(id) {
   const checkbox = document.getElementById(`todo-${id}`);
