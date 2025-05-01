@@ -97,9 +97,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-Todo.prototype.markAsCompleted = function () {
-  return this.update({ completed: true });
-};
-
   return Todo;
-};
+};  
+
