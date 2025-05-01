@@ -126,7 +126,9 @@
   fetch(`/todos/${id}/markAsCompleted`, {
     method: "PUT",
     headers: {
-      "Content-Type": "application/json" },
+      "Content-Type": "application/json",
+      "CSRF-Token": "<%= csrfToken %>"
+}
     })
     .then((res) => {
     if (res.ok) {
