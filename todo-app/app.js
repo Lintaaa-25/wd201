@@ -65,12 +65,12 @@ app.put("/todos/:id", async (req, res) => {
 
 
 app.delete("/todos/:id", async (req, res) => {
+  console.log("Delete a todo by ID: ", req.params.id);
   try {
-    const deleted = await Todo.remove(req.params.id);
-    res.json({ success: deleted ? true : false });
+    await Todo.remove(req.params.id);
+    return res.json({ success: true });
   } catch (err) {
-    console.error(err);
-    res.status(422).send(err.message);
+    return res.status(422).json(err);
   }
 });
 
