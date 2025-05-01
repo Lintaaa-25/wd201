@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Todo App</title>
   <link rel="stylesheet" href="/css/styles.css">
-  <meta name="csrf-token" content="<%= csrfToken %>">
 </head>
 <body>
   <%- include('header') %>
@@ -111,7 +110,7 @@
   <script>
     // Function to delete a Todo item
     function deleteTodo(id) {
-      fetch(`/todos/${id}`, {
+      fetch(/todos/${id}, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       })
@@ -124,16 +123,10 @@
 }
 
   function updateTodo(id) {
-    const checkbox = document.getElementById(`todo-${id}`);
-    const isCompleted = checkbox.checked;
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-  fetch(`/todos/${id}/markAsCompleted`, {
+  fetch(/todos/${id}/markAsCompleted, {
     method: "PUT",
     headers: {
-      "Content-Type": "application/json",
-      "CSRF-Token": csrfToken
-},
-body: JSON.stringify({ completed: isCompleted })
+      "Content-Type": "application/json" },
     })
     .then((res) => {
     if (res.ok) {
@@ -146,4 +139,4 @@ body: JSON.stringify({ completed: isCompleted })
   </script>
 
 </body>
-</html>
+</html>  
