@@ -130,10 +130,9 @@
   <script>
     // Function to delete a Todo item
     function deleteTodo(id) {
-      fetch(/todos/${id}, {
+      fetch(`/todos/${id}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json",
-"X-CSRF-Token": csrfToken },
+        headers: { "Content-Type": "application/json" },
       })
       .then((res) => {
 if (res.ok) {
@@ -161,7 +160,7 @@ window.location.reload(); // Reload the page to reflect changes
  
 }
 
-  const csrfToken = "<%= csrfToken %>";
+  //const csrfToken = "<%= csrfToken %>";
 
 
   </script>
