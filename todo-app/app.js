@@ -45,7 +45,7 @@ app.post("/todos", async (req, res) => {
   }
 });
 
-app.put("/todos/:id", async (req, res) => {
+app.put("/todos/:id/markAsCompleted", async (req, res) => {
   try {
     const { completed } = req.body;
     const todo = await Todo.setCompletionStatus(req.params.id, completed);
