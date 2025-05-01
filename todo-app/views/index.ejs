@@ -123,12 +123,15 @@
 }
 
   function updateTodo(id) {
+    const checkbox = document.getElementById(`todo-${id}`);
+    const isCompleted = checkbox.checked;
   fetch(`/todos/${id}/markAsCompleted`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
       "CSRF-Token": "<%= csrfToken %>"
-}
+},
+body: JSON.stringify({ completed: isCompleted })
     })
     .then((res) => {
     if (res.ok) {
