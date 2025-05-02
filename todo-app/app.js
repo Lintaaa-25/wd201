@@ -55,6 +55,17 @@ app.put("/todos/:id/markAsCompleted", async (req, res) => {
     return res.status(422).json(err);
   }
 });
+app.put("/todos/:id/markAsIncompleted", async (req, res) => {
+  console.log("We have to mark a todo as incompleted with ID:", req.params.id);
+  const todo = await Todo.findByPk(req.params.id);
+  try {
+    const updatedTodo = await Todo.markAsIncompleted();
+    return res.json(updatedTodo);
+  } catch (err) {
+    console.log(err);
+    return res.status(422).json(err);
+  }
+});
 
 
 
