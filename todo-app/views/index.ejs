@@ -116,20 +116,26 @@
       window.location.reload(); // Reload the page to reflect changes
     }
 
-  function updateTodo(id) {
-   fetch(`/todos/${id}/markAsCompleted`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-   })
-   .then((res) => {
-     if (res.ok) {
-      window.location.reload();
-    }
-})
-    .catch((err) => console.error(err));
-}
+ <script>
+  async function updateTodo(id) {
+    const checkbox = document.getElementById(`todo-${id}`);
+    const completed = checkbox.checked;
+
+    const endpoint = completed
+      ? `/todos/${id}/markAsCompleted`
+      : `/todos/${id}/markAsIncompleted`;
+
+    await fetch(endpoint, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    window.location.reload();
+  }
+</script>
+
 
   </script>
 
