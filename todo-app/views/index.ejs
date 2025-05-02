@@ -25,7 +25,7 @@
       <p id="count-overdue"><%= overdue.length %> overdue tasks</p>
       <table>
         <% overdue.forEach(todo => { %>
-          <tr class="Todo-Item">
+          <tr class="Todo-Item" id="todo-item-<%= todo.id %>">
             <td>
               <label for="todo-<%= todo.id %>">
                 <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="updateTodo(<%= todo.id %>)" />
@@ -46,7 +46,7 @@
       <p id="count-due-today"><%= dueToday.length %> tasks due today</p>
       <table>
         <% dueToday.forEach(todo => { %>
-          <tr class="Todo-Item">
+          <tr class="Todo-Item" id="todo-item-<%= todo.id %>">
             <td>
               <label for="todo-<%= todo.id %>">
                 <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="updateTodo(<%= todo.id %>)" />
@@ -67,7 +67,7 @@
       <p id="count-due-later"><%= dueLater.length %> tasks due later</p>
       <table>
         <% dueLater.forEach(todo => { %>
-          <tr class="Todo-Item">
+          <tr class="Todo-Item" id="todo-item-<%= todo.id %>">
             <td>
               <label for="todo-<%= todo.id %>">
                 <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="updateTodo(<%= todo.id %>)" />
@@ -88,7 +88,7 @@
       <p id="count-completed"><%= completedItems.length %> completed tasks</p>
       <table>
         <% completedItems.forEach(todo => { %>
-          <tr class="Todo-Item">
+          <tr class="Todo-Item" id="todo-item-<%= todo.id %>">
             <td>
               <label for="todo-<%= todo.id %>">
                 <input type="checkbox" id="todo-<%= todo.id %>" checked onchange="updateTodo(<%= todo.id %>)" />
