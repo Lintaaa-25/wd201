@@ -1,4 +1,3 @@
-
 "use strict";
 const { Model, Op } = require("sequelize");
 
@@ -50,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
 
     // Removes a Todo by ID
     static async remove(id) {
-      return this.destroy({ where: { id } });
+      return await Todo.destroy({ where: { id } });
     }
 
     // Updates a Todo item with the provided fields
