@@ -28,7 +28,7 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="updateTodo(<%= todo.id %>)" />
+                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="toggleCompleted(<%= todo.id %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -49,7 +49,7 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="updateTodo(<%= todo.id %>)" />
+                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="toggleCompleted(<%= todo.id %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -70,7 +70,7 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="updateTodo(<%= todo.id %>)" />
+                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="toggleCompleted(<%= todo.id %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -91,7 +91,7 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" checked onchange="updateTodo(<%= todo.id %>)" />
+                <input type="checkbox" id="todo-<%= todo.id %>" checked onchange="toggleCompleted(<%= todo.id %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -109,34 +109,30 @@
 
   <script>
     // Function to delete a Todo item
-    function deleteTodo(id) {
-      fetch(/todos/${id}, {
+    async function deleteTodo(id) {
+      await fetch(`/todos/${id}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((res) => {
-        if (res.ok) {
+      });
       window.location.reload(); // Reload the page to reflect changes
     }
-   })
-   .catch((err) => console.error(err));
-}
 
-  function updateTodo(id) {
-  fetch(/todos/${id}/markAsCompleted, {
+    async function toggleCompleted(id) {
+  const checkbox = document.getElementById(`todo-${id}`);
+  const completed = checkbox.checked;
+
+  await fetch(`/todos/${id}`, {
     method: "PUT",
     headers: {
-      "Content-Type": "application/json" },
-    })
-    .then((res) => {
-    if (res.ok) {
-    window.location.reload();
-   }
-})
-.catch((err) => console.error(err));
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      completed: completed,
+    }),
+  });
+  window.location.reload();
 }
 
   </script>
 
 </body>
-</html>  
+</html>
