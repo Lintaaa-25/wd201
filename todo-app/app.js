@@ -44,28 +44,32 @@ app.post("/todos", async (req, res) => {
   }
 });
 
-app.put("/todos/:id/markAsCompleted", async (req, res) => {
-  console.log("We have to update a todo with ID:" ,req.params.id);
-  const todo = await Todo.findByPk(req.params.id);
+app.put("/todos/:id", async (req, res) => {
   try {
-    const updatedTodo = await todo.markAsCompleted();
-    return res.json(updatedTodo);
+    const { completed } = req.body;
+    const todo = await Todo.setCompletionStatus(req.params.id, completed);
+
+    if (todo[0] === 0) {
+      // If no rows were updated, return an error
+      return res.status(404).send("Todo not found");
+    }
+
+    res.json({ success: true });
   } catch (err) {
-    console.log(err);
-    return res.status(422).json(err);
+    console.error(err);
+    res.status(500).send(err.message);
   }
 });
 
 
 
 app.delete("/todos/:id", async (req, res) => {
-  console.log("Delete a todo by ID: ", req.params.id);
   try {
-    await Todo.remove(req.params.id);
-    return res.json({ success: true});
+    const deleted = await Todo.remove(req.params.id);
+    res.json({ success: deleted ? true : false });
   } catch (err) {
     console.error(err);
-    return res.status(422).json(err);
+    res.status(422).send(err.message);
   }
 });
 
