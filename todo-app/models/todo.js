@@ -62,7 +62,23 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     // Updates a Todo item with the provided fields
-   
+   static async updateTodo(id, updatedFields) {
+      return await Todo.update(updatedFields, { where: { id } });
+    }
+
+    // Updates the completion status of a Todo item
+    static async setCompletionStatus(id, completed) {
+      if (typeof completed !== 'boolean') {
+        throw new Error('Completed status must be a boolean');
+      }
+      return await Todo.update(
+        { completed },
+        { where: { id } }
+      );
+    }
+  }
+
+
   // Initialize the Todo model with validations and default values
   Todo.init(
     {
