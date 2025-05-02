@@ -123,16 +123,22 @@ async function updateTodo(id) {
       ? `/todos/${id}/markAsCompleted`
       : `/todos/${id}/markAsIncompleted`;
 
+    // Update the task status on the server
     await fetch(endpoint, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     });
 
-    window.location.reload();
+    // Optionally, update the UI dynamically (e.g., add crossed-out text for completed tasks)
+    const todoItem = document.getElementById(`todo-item-${id}`);
+    if (completed) {
+      todoItem.classList.add("completed"); // Add a class to style the completed task
+    } else {
+      todoItem.classList.remove("completed"); // Remove class if task is incompleted
+    }
   }
-
   </script>
 
 </body>
