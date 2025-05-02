@@ -3,6 +3,15 @@ const { Model, Op } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
+     // Instance method to mark a todo as completed
+  markAsCompleted() {
+    return this.update({ completed: true });
+  }
+
+  // Instance method to mark a todo as incompleted
+  markAsIncompleted() {
+    return this.update({ completed: false });
+  }
     // Adds a new Todo item
     static async addTodo({ title, dueDate }) {
       if (!title || !dueDate) throw new Error("Title and DueDate are required");
@@ -53,22 +62,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     // Updates a Todo item with the provided fields
-    static async updateTodo(id, updatedFields) {
-      return await Todo.update(updatedFields, { where: { id } });
-    }
-
-    // Updates the completion status of a Todo item
-    static async setCompletionStatus(id, completed) {
-      if (typeof completed !== 'boolean') {
-        throw new Error('Completed status must be a boolean');
-      }
-      return await Todo.update(
-        { completed },
-        { where: { id } }
-      );
-    }
-  }
-
+   
   // Initialize the Todo model with validations and default values
   Todo.init(
     {
