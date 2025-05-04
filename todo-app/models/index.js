@@ -16,16 +16,22 @@ if (config.use_env_variable) {
 }
 
 fs.readdirSync(__dirname)
-  .filter((file) => {
-    return file !== basename && file.slice(-3) === ".js";
+  .filter(file => {
+    return (
+      file.indexOf(".") !== 0 &&
+      file !== basename &&
+      file.slice(-3) === ".js"
+    );
   })
-  .forEach((file) => {
+  .forEach(file => {
     const modelDef = require(path.join(__dirname, file));
-    const model = modelDef(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
+    if (typeof modelDef === "function") {
+      const model = modelDef(sequelize, Sequelize.DataTypes);
+      db[model.name] = model;
+    }
   });
 
-Object.keys(db).forEach((modelName) => {
+Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }
