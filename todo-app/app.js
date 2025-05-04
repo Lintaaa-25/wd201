@@ -6,21 +6,22 @@ const methodOverride = require("method-override");
 const csrf = require("tiny-csrf");
 const cookieParser = require("cookie-parser");
 
-const csrfSecret = "1234567890abcdef1234567890abcdef"; // 32-char secret
-
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cookieParser(csrfSecret));
-app.use(csrf(csrfSecret, ["POST", "PUT", "DELETE"]));
+app.use(cookieParser("a_secure_string_that_is_exactly_32_chars"));
+app.use(csrf("a_secure_string_that_is_exactly_32_chars", ["POST", "PUT", "DELETE"]));
 app.use(methodOverride("_method"));
 
 app.get("/", async (req, res) => {
   const todos = await Todo.getTodos();
+  const incompleteTodos = todos.filter(todo => !todo.completed);
+  const completedTodos = todos.filter(todo => todo.completed);
   res.render("index", {
-    todos,
-    csrfToken: req.csrfToken()
+    incompleteTodos,
+    completedTodos,
+    csrfToken: req.csrfToken(),
   });
 });
 
@@ -28,7 +29,8 @@ app.post("/todos", async (req, res) => {
   try {
     await Todo.addTodo({
       title: req.body.title,
-      dueDate: req.body.dueDate
+      dueDate: req.body.dueDate,
+      completed: false,
     });
     res.redirect("/");
   } catch (err) {
