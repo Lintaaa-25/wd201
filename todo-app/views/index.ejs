@@ -2,51 +2,81 @@
 <html>
 <head>
   <title>Todo App</title>
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <h1>Todos</h1>
-
-  <form action="/todos" method="POST">
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <input type="text" name="title" placeholder="Title" required>
-    <input type="date" name="dueDate" required>
-    <button type="submit">Add</button>
+  <h1>Todo List</h1>
+  <form method="POST" action="/todos">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <input type="text" name="title" required placeholder="Title" />
+    <input type="date" name="dueDate" required />
+    <button type="submit">Add Todo</button>
   </form>
 
-  <h2>Incomplete</h2>
+  <h2>Overdue</h2>
   <ul>
-    <% incompleted.forEach(todo => { %>
+    <% overdue.forEach(todo => { %>
       <li>
-        <form method="POST" action="/todos/<%= todo.id %>?_method=PUT" style="display:inline">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <input type="hidden" name="completed" value="true">
-          <input type="checkbox" onchange="this.form.submit()">
-        </form>
+        <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="updateTodo(<%= todo.id %>)" />
         <%= todo.title %> - <%= todo.dueDate %>
-        <form method="POST" action="/todos/<%= todo.id %>?_method=DELETE" style="display:inline">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <button type="submit">Delete</button>
-        </form>
+        <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+      </li>
+    <% }) %>
+  </ul>
+
+  <h2>Due Today</h2>
+  <ul>
+    <% dueToday.forEach(todo => { %>
+      <li>
+        <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="updateTodo(<%= todo.id %>)" />
+        <%= todo.title %> - <%= todo.dueDate %>
+        <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
+      </li>
+    <% }) %>
+  </ul>
+
+  <h2>Due Later</h2>
+  <ul>
+    <% dueLater.forEach(todo => { %>
+      <li>
+        <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="updateTodo(<%= todo.id %>)" />
+        <%= todo.title %> - <%= todo.dueDate %>
+        <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
       </li>
     <% }) %>
   </ul>
 
   <h2>Completed</h2>
   <ul>
-    <% completed.forEach(todo => { %>
+    <% completedItems.forEach(todo => { %>
       <li>
-        <form method="POST" action="/todos/<%= todo.id %>?_method=PUT" style="display:inline">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <input type="hidden" name="completed" value="false">
-          <input type="checkbox" checked onchange="this.form.submit()">
-        </form>
+        <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="updateTodo(<%= todo.id %>)" />
         <%= todo.title %> - <%= todo.dueDate %>
-        <form method="POST" action="/todos/<%= todo.id %>?_method=DELETE" style="display:inline">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-          <button type="submit">Delete</button>
-        </form>
+        <button onclick="deleteTodo(<%= todo.id %>)">Delete</button>
       </li>
     <% }) %>
   </ul>
+
+  <script>
+    async function deleteTodo(id) {
+      await fetch(`/todos/${id}`, { method: "DELETE" });
+      window.location.reload();
+    }
+
+    async function updateTodo(id) {
+      const checkbox = document.getElementById(`todo-${id}`);
+      const completed = checkbox.checked;
+      const endpoint = completed
+        ? `/todos/${id}/markAsCompleted`
+        : `/todos/${id}/markAsIncompleted`;
+
+      await fetch(endpoint, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      window.location.reload();
+    }
+  </script>
 </body>
 </html>
