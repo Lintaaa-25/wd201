@@ -1,50 +1,44 @@
-const { Model, DataTypes } = require("sequelize");
-const sequelize = require("../db");
+"use strict";
 
-class Todo extends Model {
-  static async getTodos() {
-    return await Todo.findAll({ order: [["dueDate", "ASC"]] });
-  }
-
-  static async addTodo({ title, dueDate, completed }) {
-    return await Todo.create({ title, dueDate, completed });
-  }
-
-  static async deleteTodo(id) {
-    const todo = await Todo.findByPk(id);
-    if (todo) {
-      await todo.destroy();
-    }
-  }
-
-  static async setCompletionStatus(id, completed) {
-    const todo = await Todo.findByPk(id);
-    if (todo) {
-      todo.completed = completed;
-      await todo.save();
-    }
-  }
-}
-
-Todo.init(
-  {
+module.exports = (sequelize, DataTypes) => {
+  const Todo = sequelize.define("Todo", {
     title: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notEmpty: true
+      }
     },
     dueDate: {
       type: DataTypes.DATEONLY,
-      allowNull: false,
+      allowNull: false
     },
     completed: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
-  },
-  {
-    sequelize,
-    modelName: "Todo",
-  }
-);
+      defaultValue: false
+    }
+  });
 
-module.exports = Todo;
+  // Custom static methods
+  Todo.addTodo = async function ({ title, dueDate }) {
+    return await Todo.create({ title, dueDate });
+  };
+
+  Todo.getTodos = async function () {
+    return await Todo.findAll({ order: [["id", "ASC"]] });
+  };
+
+  Todo.setCompletionStatus = async function (id, completed) {
+    const todo = await Todo.findByPk(id);
+    if (!todo) throw new Error("Todo not found");
+    return await todo.update({ completed });
+  };
+
+  Todo.deleteTodo = async function (id) {
+    const todo = await Todo.findByPk(id);
+    if (!todo) throw new Error("Todo not found");
+    return await todo.destroy();
+  };
+
+  return Todo;
+};
