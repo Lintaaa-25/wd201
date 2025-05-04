@@ -129,6 +129,7 @@
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "X-CSRF-Token": "<%= csrfToken %>", // Crucial: Include the CSRF token
           },
         });
 
