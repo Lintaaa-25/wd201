@@ -1,43 +1,53 @@
-"use strict";
+const { Model, DataTypes, Op } = require("sequelize");
+const sequelize = require("./index");
 
-module.exports = (sequelize, DataTypes) => {
-  const Todo = sequelize.define("Todo", {
+class Todo extends Model {
+  static async addTodo({ title, dueDate }) {
+    return await Todo.create({ title, dueDate, completed: false });
+  }
+
+  static async getTodos() {
+    const todos = await Todo.findAll();
+    const today = new Date().toISOString().split("T")[0];
+    const overdue = todos.filter(t => t.dueDate < today && !t.completed);
+    const dueToday = todos.filter(t => t.dueDate === today && !t.completed);
+    const dueLater = todos.filter(t => t.dueDate > today && !t.completed);
+    const completedItems = todos.filter(t => t.completed);
+    return { overdue, dueToday, dueLater, completedItems };
+  }
+
+  async markAsCompleted() {
+    return await this.update({ completed: true });
+  }
+
+  async markAsIncompleted() {
+    return await this.update({ completed: false });
+  }
+
+  static async remove(id) {
+    return await Todo.destroy({ where: { id } });
+  }
+}
+
+Todo.init(
+  {
     title: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true
-      }
     },
     dueDate: {
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: false,
     },
     completed: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false
-    }
-  });
+      defaultValue: false,
+    },
+  },
+  {
+    sequelize,
+    modelName: "Todo",
+  }
+);
 
-  Todo.addTodo = async function ({ title, dueDate }) {
-    return await Todo.create({ title, dueDate });
-  };
-
-  Todo.getTodos = async function () {
-    return await Todo.findAll({ order: [["id", "ASC"]] });
-  };
-
-  Todo.setCompletionStatus = async function (id, completed) {
-    const todo = await Todo.findByPk(id);
-    if (!todo) throw new Error("Todo not found");
-    return await todo.update({ completed });
-  };
-
-  Todo.deleteTodo = async function (id) {
-    const todo = await Todo.findByPk(id);
-    if (!todo) throw new Error("Todo not found");
-    return await todo.destroy();
-  };
-
-  return Todo;
-};
+module.exports = Todo;
