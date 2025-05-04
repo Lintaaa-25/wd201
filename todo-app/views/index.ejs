@@ -4,87 +4,78 @@
   <title>Todo App</title>
 </head>
 <body>
-  <h1>My Todo List</h1>
+  <h1>Todo Manager</h1>
 
-  <form action="/todos" method="POST" onsubmit="return validateTodoForm()">
+  <form action="/todos" method="POST">
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-    <input type="text" name="title" id="todo-title" placeholder="Title" required />
-    <input type="date" name="dueDate" id="todo-dueDate" required />
-    <button type="submit">Add</button>
+    <input type="text" name="title" placeholder="Todo Title" required />
+    <input type="date" name="dueDate" required />
+    <button type="submit">Add Todo</button>
   </form>
 
-  <h2>Overdue (<span id="count-overdue"><%= todos.overdue.length %></span>)</h2>
-  <% todos.overdue.forEach(todo => { %>
-    <label>
-      <input type="checkbox" id="todo-<%= todo.id %>" onchange="updateTodo(<%= todo.id %>)" />
-      <%= todo.title %> - <%= todo.dueDate %>
-    </label>
-    <form action="/todos/<%= todo.id %>?_method=DELETE" method="POST" style="display:inline;">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button type="submit">Delete</button>
-    </form>
-    <br/>
-  <% }) %>
+  <h3>Incomplete</h3>
+  <ul>
+    <% incompleteTodos.forEach(todo => { %>
+      <li>
+        <input
+          type="checkbox"
+          class="todo-checkbox"
+          data-id="<%= todo.id %>"
+          data-csrf="<%= csrfToken %>"
+          <%= todo.completed ? "checked" : "" %>
+        />
+        <%= todo.title %> - <%= todo.dueDate %>
+        <form action="/todos/<%= todo.id %>?_method=DELETE" method="POST" style="display:inline;">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <button type="submit">Delete</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
 
-  <h2>Due Today (<span id="count-due-today"><%= todos.dueToday.length %></span>)</h2>
-  <% todos.dueToday.forEach(todo => { %>
-    <label>
-      <input type="checkbox" id="todo-<%= todo.id %>" onchange="updateTodo(<%= todo.id %>)" />
-      <%= todo.title %>
-    </label>
-    <form action="/todos/<%= todo.id %>?_method=DELETE" method="POST" style="display:inline;">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button type="submit">Delete</button>
-    </form>
-    <br/>
-  <% }) %>
-
-  <h2>Due Later (<span id="count-due-later"><%= todos.dueLater.length %></span>)</h2>
-  <% todos.dueLater.forEach(todo => { %>
-    <label>
-      <input type="checkbox" id="todo-<%= todo.id %>" onchange="updateTodo(<%= todo.id %>)" />
-      <%= todo.title %> - <%= todo.dueDate %>
-    </label>
-    <form action="/todos/<%= todo.id %>?_method=DELETE" method="POST" style="display:inline;">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button type="submit">Delete</button>
-    </form>
-    <br/>
-  <% }) %>
-
-  <h2>Completed (<span id="count-completed"><%= todos.completed.length %></span>)</h2>
-  <% todos.completed.forEach(todo => { %>
-    <label>
-      <input type="checkbox" id="todo-<%= todo.id %>" checked onchange="updateTodo(<%= todo.id %>)" />
-      <s><%= todo.title %></s>
-    </label>
-    <form action="/todos/<%= todo.id %>?_method=DELETE" method="POST" style="display:inline;">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      <button type="submit">Delete</button>
-    </form>
-    <br/>
-  <% }) %>
+  <h3>Completed</h3>
+  <ul>
+    <% completedTodos.forEach(todo => { %>
+      <li>
+        <input
+          type="checkbox"
+          class="todo-checkbox"
+          data-id="<%= todo.id %>"
+          data-csrf="<%= csrfToken %>"
+          <%= todo.completed ? "checked" : "" %>
+        />
+        <%= todo.title %> - <%= todo.dueDate %>
+        <form action="/todos/<%= todo.id %>?_method=DELETE" method="POST" style="display:inline;">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <button type="submit">Delete</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
 
   <script>
-    function validateTodoForm() {
-      const title = document.getElementById('todo-title').value.trim();
-      const dueDate = document.getElementById('todo-dueDate').value.trim();
-      if (!title || !dueDate) {
-        alert("Please enter both title and due date");
-        return false;
-      }
-      return true;
-    }
+    document.querySelectorAll(".todo-checkbox").forEach((checkbox) => {
+      checkbox.addEventListener("change", async (e) => {
+        const todoId = e.target.dataset.id;
+        const completed = e.target.checked;
+        const csrfToken = e.target.dataset.csrf;
 
-    async function updateTodo(id) {
-      const completed = document.getElementById(`todo-${id}`).checked;
-      await fetch(`/todos/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ completed })
+        const response = await fetch(`/todos/${todoId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": csrfToken,
+          },
+          body: JSON.stringify({ completed }),
+        });
+
+        if (response.ok) {
+          window.location.reload();
+        } else {
+          alert("Update failed");
+        }
       });
-      window.location.reload();
-    }
+    });
   </script>
 </body>
 </html>
