@@ -10,17 +10,17 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cookieParser("1234567890abcdef1234567890abcdef"));
-app.use(csrf("1234567890abcdef1234567890abcdef", ["POST", "PUT", "DELETE"]));
+app.use(cookieParser("12345678901234567890123456789012"));
+app.use(csrf("12345678901234567890123456789012", ["POST", "PUT", "DELETE"]));
 app.use(methodOverride("_method"));
 
 app.get("/", async (req, res) => {
   const todos = await Todo.getTodos();
-  const incompleteTodos = todos.filter(todo => !todo.completed);
-  const completedTodos = todos.filter(todo => todo.completed);
+  const completed = todos.filter((todo) => todo.completed);
+  const incompleted = todos.filter((todo) => !todo.completed);
   res.render("index", {
-    incompleteTodos,
-    completedTodos,
+    completed,
+    incompleted,
     csrfToken: req.csrfToken(),
   });
 });
@@ -30,7 +30,6 @@ app.post("/todos", async (req, res) => {
     await Todo.addTodo({
       title: req.body.title,
       dueDate: req.body.dueDate,
-      completed: false,
     });
     res.redirect("/");
   } catch (err) {
@@ -39,16 +38,11 @@ app.post("/todos", async (req, res) => {
 });
 
 app.put("/todos/:id", async (req, res) => {
-  const { completed } = req.body;
   try {
-    if (typeof completed !== "boolean") {
-      return res.status(400).json({ error: "Completed must be a boolean" });
-    }
-    await Todo.setCompletionStatus(req.params.id, completed);
-    const updated = await Todo.findByPk(req.params.id);
-    return res.json(updated);
+    const updated = await Todo.setCompletionStatus(req.params.id, req.body.completed === "true");
+    res.json(updated);
   } catch (err) {
-    return res.status(503).json({ error: "Update failed" });
+    res.status(503).json({ error: "Update failed" });
   }
 });
 
