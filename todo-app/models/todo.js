@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  // Custom static methods
   Todo.addTodo = async function ({ title, dueDate }) {
     return await Todo.create({ title, dueDate });
   };
