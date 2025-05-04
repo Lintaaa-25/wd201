@@ -4,78 +4,49 @@
   <title>Todo App</title>
 </head>
 <body>
-  <h1>Todo Manager</h1>
+  <h1>Todos</h1>
 
   <form action="/todos" method="POST">
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-    <input type="text" name="title" placeholder="Todo Title" required />
-    <input type="date" name="dueDate" required />
-    <button type="submit">Add Todo</button>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <input type="text" name="title" placeholder="Title" required>
+    <input type="date" name="dueDate" required>
+    <button type="submit">Add</button>
   </form>
 
-  <h3>Incomplete</h3>
+  <h2>Incomplete</h2>
   <ul>
-    <% incompleteTodos.forEach(todo => { %>
+    <% incompleted.forEach(todo => { %>
       <li>
-        <input
-          type="checkbox"
-          class="todo-checkbox"
-          data-id="<%= todo.id %>"
-          data-csrf="<%= csrfToken %>"
-          <%= todo.completed ? "checked" : "" %>
-        />
+        <form method="POST" action="/todos/<%= todo.id %>?_method=PUT" style="display:inline">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input type="hidden" name="completed" value="true">
+          <input type="checkbox" onchange="this.form.submit()">
+        </form>
         <%= todo.title %> - <%= todo.dueDate %>
-        <form action="/todos/<%= todo.id %>?_method=DELETE" method="POST" style="display:inline;">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <form method="POST" action="/todos/<%= todo.id %>?_method=DELETE" style="display:inline">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button type="submit">Delete</button>
         </form>
       </li>
     <% }) %>
   </ul>
 
-  <h3>Completed</h3>
+  <h2>Completed</h2>
   <ul>
-    <% completedTodos.forEach(todo => { %>
+    <% completed.forEach(todo => { %>
       <li>
-        <input
-          type="checkbox"
-          class="todo-checkbox"
-          data-id="<%= todo.id %>"
-          data-csrf="<%= csrfToken %>"
-          <%= todo.completed ? "checked" : "" %>
-        />
+        <form method="POST" action="/todos/<%= todo.id %>?_method=PUT" style="display:inline">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input type="hidden" name="completed" value="false">
+          <input type="checkbox" checked onchange="this.form.submit()">
+        </form>
         <%= todo.title %> - <%= todo.dueDate %>
-        <form action="/todos/<%= todo.id %>?_method=DELETE" method="POST" style="display:inline;">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <form method="POST" action="/todos/<%= todo.id %>?_method=DELETE" style="display:inline">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
           <button type="submit">Delete</button>
         </form>
       </li>
     <% }) %>
   </ul>
-
-  <script>
-    document.querySelectorAll(".todo-checkbox").forEach((checkbox) => {
-      checkbox.addEventListener("change", async (e) => {
-        const todoId = e.target.dataset.id;
-        const completed = e.target.checked;
-        const csrfToken = e.target.dataset.csrf;
-
-        const response = await fetch(`/todos/${todoId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-Token": csrfToken,
-          },
-          body: JSON.stringify({ completed }),
-        });
-
-        if (response.ok) {
-          window.location.reload();
-        } else {
-          alert("Update failed");
-        }
-      });
-    });
-  </script>
 </body>
 </html>
