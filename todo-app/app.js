@@ -6,12 +6,14 @@ const methodOverride = require("method-override");
 const csrf = require("tiny-csrf");
 const cookieParser = require("cookie-parser");
 
+const csrfSecret = "1234567890abcdef1234567890abcdef"; // 32-char secret
+
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cookieParser("a_secure_string"));
-app.use(csrf("a_secure_string", ["POST", "PUT", "DELETE"]));
+app.use(cookieParser(csrfSecret));
+app.use(csrf(csrfSecret, ["POST", "PUT", "DELETE"]));
 app.use(methodOverride("_method"));
 
 app.get("/", async (req, res) => {
