@@ -10,8 +10,8 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cookieParser("a_secure_string_that_is_exactly_32_chars"));
-app.use(csrf("a_secure_string_that_is_exactly_32_chars", ["POST", "PUT", "DELETE"]));
+app.use(cookieParser("1234567890abcdef1234567890abcdef"));
+app.use(csrf("1234567890abcdef1234567890abcdef", ["POST", "PUT", "DELETE"]));
 app.use(methodOverride("_method"));
 
 app.get("/", async (req, res) => {
