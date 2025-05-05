@@ -5,7 +5,7 @@
   <title>Todo App</title>
   <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body>
+<body data-csrf-token="<%= csrfToken %>">
   <%- include('header') %>
 
   <main>
@@ -107,17 +107,22 @@
     async function deleteTodo(id) {
       await fetch(`/todos/${id}`, {
         method: "DELETE",
+        headers: {
+          "X-CSRF-Token": document.body.dataset.csrfToken, // Access the token from the data attribute
+        },
       });
       window.location.reload(); // Reload the page to reflect changes
     }
 
     async function updateTodo(id) {
+      const csrfToken = document.body.dataset.csrfToken; // Get the CSRF token
+
       const checkbox = document.getElementById(`todo-${id}`);
       const completed = checkbox.checked;
       const todoItem = document.getElementById(`todo-item-${id}`);
       const todoLabel = todoItem.querySelector('label');
-      const todoText = todoLabel.textContent; // Capture the todo text
-      const dueDateMatch = todoText.match(/ - (.*)/); // Extract the due date
+      const todoText = todoLabel.textContent;
+      const dueDateMatch = todoText.match(/ - (.*)/);
       const dueDate = dueDateMatch ? dueDateMatch[1] : '';
 
       const endpoint = completed
@@ -129,14 +134,14 @@
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRF-Token": "<%= csrfToken %>", // Crucial: Include the CSRF token
+            "X-CSRF-Token": csrfToken, // Use the retrieved token
           },
         });
 
         if (response.ok) {
           // Update the UI directly
           if (completed) {
-            todoItem.remove(); // Remove from the current list
+            todoItem.remove();
             const completedTable = document.querySelector('#completed + table');
             const newRow = document.createElement('tr');
             newRow.classList.add('Todo-Item');
@@ -155,14 +160,12 @@
             completedTable.appendChild(newRow);
             document.getElementById('count-completed').textContent = `${document.querySelectorAll('#completed .Todo-Item').length} completed tasks`;
 
-            // Update the count for the previous section
             const previousSection = todoItem.closest('section');
             if (previousSection && previousSection.id) {
               document.getElementById(`count-${previousSection.id}`).textContent = `${previousSection.querySelectorAll('.Todo-Item').length - 1} ${previousSection.id.replace('-', ' ')} tasks`;
             }
 
           } else {
-            // Move back to the appropriate incomplete section
             todoItem.remove();
             let targetTable;
             let countElementId;
