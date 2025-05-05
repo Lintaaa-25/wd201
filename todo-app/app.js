@@ -5,7 +5,7 @@ const { Todo } = require("./models");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const csrf = require("tiny-csrf");
-const secret = "e34f8c1f5b5d8f7b3947a2f013529fd5"; 
+const secret = "e34f8c1f5b5d8f7b3947a2f013529fd5";
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -48,26 +48,33 @@ app.put("/todos/:id/markAsCompleted", async (req, res) => {
   console.log("We have to update a todo with ID:", req.params.id);
   const todo = await Todo.findByPk(req.params.id);
   try {
-    const updatedTodo = await todo.markAsCompleted();
-    return res.json(updatedTodo);
+    if (todo) {
+      const updatedTodo = await todo.markAsCompleted();
+      return res.json(updatedTodo);
+    } else {
+      return res.status(404).json({ error: "Todo not found" });
+    }
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(422).json(err);
   }
 });
+
 app.put("/todos/:id/markAsIncompleted", async (req, res) => {
   console.log("We have to mark a todo as incompleted with ID:", req.params.id);
   const todo = await Todo.findByPk(req.params.id);
   try {
-    const updatedTodo = await todo.markAsIncompleted();
-    return res.json(updatedTodo);
+    if (todo) {
+      const updatedTodo = await todo.markAsIncompleted();
+      return res.json(updatedTodo);
+    } else {
+      return res.status(404).json({ error: "Todo not found" });
+    }
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return res.status(422).json(err);
   }
 });
-
-
 
 app.delete("/todos/:id", async (req, res) => {
   try {
