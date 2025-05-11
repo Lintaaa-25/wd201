@@ -87,17 +87,4 @@ app.delete("/todos/:id", async (req, res) => {
 });
 
 module.exports = app;
-index.js
 
-const app = require("./app");
-const { sequelize } = require("./models");
-
-const port = process.env.PORT || 3000;
-
-sequelize.sync().then(() => {
-  app.listen(port, () => {
-    console.log(Server running on http://localhost:${port});
-  });
-});
-
-module.exports = app;
