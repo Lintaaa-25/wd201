@@ -16,7 +16,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
 
 // Routes
-
 app.get("/", async (req, res) => {
   const todos = await Todo.getTodos();
   res.render("index", {
@@ -48,6 +47,10 @@ app.put("/todos/:id/markAsCompleted", async (req, res) => {
   console.log("We have to update a todo with ID:", req.params.id);
   const todo = await Todo.findByPk(req.params.id);
   try {
+    if (req.body._csrf !== req.csrfToken()) {
+      return res.status(403).json({ error: "Invalid CSRF token" });
+    }
+
     if (todo) {
       const updatedTodo = await todo.markAsCompleted();
       return res.json(updatedTodo);
@@ -64,6 +67,10 @@ app.put("/todos/:id/markAsIncompleted", async (req, res) => {
   console.log("We have to mark a todo as incompleted with ID:", req.params.id);
   const todo = await Todo.findByPk(req.params.id);
   try {
+    if (req.body._csrf !== req.csrfToken()) {
+      return res.status(403).json({ error: "Invalid CSRF token" });
+    }
+
     if (todo) {
       const updatedTodo = await todo.markAsIncompleted();
       return res.json(updatedTodo);
@@ -78,6 +85,10 @@ app.put("/todos/:id/markAsIncompleted", async (req, res) => {
 
 app.delete("/todos/:id", async (req, res) => {
   try {
+    if (req.body._csrf !== req.csrfToken()) {
+      return res.status(403).json({ error: "Invalid CSRF token" });
+    }
+
     const deleted = await Todo.remove(req.params.id);
     res.json({ success: deleted ? true : false });
   } catch (err) {
