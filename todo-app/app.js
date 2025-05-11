@@ -100,3 +100,4 @@ sequelize.sync().then(() => {
   });
 });
 
+module.exports = app;
