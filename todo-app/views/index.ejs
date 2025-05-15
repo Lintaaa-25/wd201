@@ -108,6 +108,16 @@
   <%- include('footer') %>
 
   <script>
+   function updateTodo(id) {
+  fetch(`/todos/${id}/markAsCompleted`, {
+    method: "put",
+    headers: { "Content-Type": "application/json" },
+  })
+  .then((res) => {
+    window.location.reload();
+  })
+  .catch((err) => console.error(err));
+}
     // Function to delete a Todo item
     async function deleteTodo(id) {
       await fetch(`/todos/${id}`, {
