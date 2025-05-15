@@ -116,7 +116,6 @@
   <%- include('footer') %>
 
   <script>
-    const CSRF_TOKEN = "<%= csrfToken %>";
    function updateTodo(id) {
   fetch(`/todos/${id}/toggle`, {
     method: "PUT",
