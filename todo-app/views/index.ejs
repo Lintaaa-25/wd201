@@ -28,7 +28,9 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="toggleCompleted(<%= todo.id %>)" />
+                <input type="checkbox" id="todo-<%= todo.id %>" 
+                  <%= todo.completed ? 'checked' : '' %> 
+                  onchange="updateTodo(<%= todo.id %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -49,7 +51,9 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="toggleCompleted(<%= todo.id %>)" />
+                <input type="checkbox" id="todo-<%= todo.id %>" 
+                  <%= todo.completed ? 'checked' : '' %> 
+                  onchange="updateTodo(<%= todo.id %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -70,7 +74,9 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" <%= todo.completed ? 'checked' : '' %> onchange="toggleCompleted(<%= todo.id %>)" />
+                <input type="checkbox" id="todo-<%= todo.id %>" 
+                  <%= todo.completed ? 'checked' : '' %> 
+                  onchange="updateTodo(<%= todo.id %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -91,7 +97,9 @@
           <tr class="Todo-Item">
             <td>
               <label for="todo-<%= todo.id %>">
-                <input type="checkbox" id="todo-<%= todo.id %>" checked onchange="toggleCompleted(<%= todo.id %>)" />
+                <input type="checkbox" id="todo-<%= todo.id %>" 
+                  checked 
+                  onchange="updateTodo(<%= todo.id %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -102,37 +110,35 @@
         <% }) %>
       </table>
     </section>
-
   </main>
 
   <%- include('footer') %>
 
   <script>
     function updateTodo(id) {
-    fetch(`/todos/${id}/toggle`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-    .then((res) => {
-      if (res.ok) {
-        window.location.reload();
-      }
-    })
-    .catch((err) => console.error("Error toggling todo:", err));
-  }
-    // Function to delete a Todo item
+      fetch(`/todos/${id}/toggle`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        if (res.ok) {
+          window.location.reload();
+        } else {
+          console.error("Failed to toggle todo status");
+        }
+      })
+      .catch((err) => console.error("Error toggling todo:", err));
+    }
+
     async function deleteTodo(id) {
       await fetch(`/todos/${id}`, {
         method: "DELETE",
       });
       window.location.reload(); // Reload the page to reflect changes
     }
-
-    
-
   </script>
-
 </body>
 </html>
+
