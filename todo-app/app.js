@@ -43,15 +43,21 @@ app.post("/todos", async (req, res) => {
     res.status(422).send(err.message);
   }
 });
-
 app.put("/todos/:id/toggle", async (req, res) => {
   try {
+    console.log("Toggle request received for ID:", req.params.id);
     const todo = await Todo.findByPk(req.params.id);
-    if (!todo) return res.status(404).json({ error: "Todo not found" });
 
-    todo.completed = !todo.completed; // Toggle
-    await todo.save(); // Save to DB
-    return res.json(todo); // Send updated todo
+    if (!todo) {
+      console.log("Todo not found for ID:", req.params.id);
+      return res.status(404).json({ error: "Todo not found" });
+    }
+
+    todo.completed = !todo.completed;
+    await todo.save();
+
+    console.log("Todo updated successfully:", todo);
+    return res.json(todo);
   } catch (err) {
     console.error("Toggle error:", err.message, err.stack);
     return res.status(500).json({ error: "Something went wrong" });
