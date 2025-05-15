@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
 
-// Routes
+
 
 app.get("/", async (req, res) => {
 const todos = await Todo.getTodos();
