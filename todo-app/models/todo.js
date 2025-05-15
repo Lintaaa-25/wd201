@@ -3,7 +3,7 @@ const { Model, Op } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
-    // Adds a new Todo item
+    
     static async addTodo({ title, dueDate }) {
       if (!title || !dueDate) throw new Error("Title and DueDate are required");
       return await Todo.create({ title, dueDate, completed: false });
