@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser(secret));
 app.use(csrf(secret));
+const csrfProtection = csrf(secret);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
@@ -44,7 +45,7 @@ app.post("/todos", async (req, res) => {
   }
 });
 
-app.put("/todos/:id/toggle", async (req, res) => {
+app.put("/todos/:id/toggle", csrfProtection, async (req, res) => {
   try {
     const todo = await Todo.findByPk(req.params.id);
     if (!todo) return res.status(404).json({ error: "Todo not found" });
