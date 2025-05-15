@@ -44,12 +44,12 @@ res.status(422).send(err.message);
 }
 });
 
-app.put("/todos/\:id/toggle", async (req, res) => {
+app.put("/todos/:id/toggle", async (req, res) => {
 try {
 console.log("Toggle request received for ID:", req.params.id);
 const todo = await Todo.findByPk(req.params.id);
 
-```
+
 if (!todo) {
   console.log("Todo not found for ID:", req.params.id);
   return res.status(404).json({ error: "Todo not found" });
@@ -62,7 +62,7 @@ await todo.reload(); // Refresh the instance with latest DB state
 
 console.log("Todo updated:", todo.toJSON());
 return res.json(todo);
-```
+
 
 } catch (err) {
 console.error("Toggle error:", err.message, err.stack);
@@ -70,7 +70,7 @@ return res.status(500).json({ error: "Something went wrong" });
 }
 });
 
-app.delete("/todos/\:id", async (req, res) => {
+app.delete("/todos/:id", async (req, res) => {
 try {
 const deleted = await Todo.remove(req.params.id);
 res.json({ success: deleted ? true : false });
