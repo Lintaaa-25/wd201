@@ -3,99 +3,89 @@ const { Model, Op } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
-    
-    static async addTodo({ title, dueDate }) {
-      if (!title || !dueDate) throw new Error("Title and DueDate are required");
-      return await Todo.create({ title, dueDate, completed: false });
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
     }
-
-    // Fetches all Todos: overdue, due today, due later, and completed
-    static async getTodos() {
-      const today = new Date().toISOString().split("T")[0];
-
-      const overdue = await Todo.findAll({
+    static addTodo({ title, dueDate }) {
+      return this.create({ title: title, dueDate: dueDate, completed: false });
+    }
+    markAsCompleted() {
+      return this.update({ completed: true });
+    }
+    deletetodo() {
+      return this.removetask(id);
+    }
+    static getTodos() {
+      return this.findAll({ order: [["id", "ASC"]] });
+    }
+    static overdue() {
+      return this.findAll({
         where: {
-          dueDate: { [Op.lt]: today },
+          dueDate: {
+            [Op.lt]: new Date().toLocaleDateString("en-CA"),
+          },
           completed: false,
         },
-        order: [["dueDate", "ASC"]],
+        order: [["id", "ASC"]],
       });
-
-      const dueToday = await Todo.findAll({
+    }
+    static dueToday() {
+      return this.findAll({
         where: {
-          dueDate: { [Op.eq]: today },
+          dueDate: {
+            [Op.eq]: new Date().toLocaleDateString("en-CA"),
+          },
           completed: false,
         },
-        order: [["dueDate", "ASC"]],
+        order: [["id", "ASC"]],
       });
-
-      const dueLater = await Todo.findAll({
+    }
+    static dueLater() {
+      return this.findAll({
         where: {
-          dueDate: { [Op.gt]: today },
+          dueDate: {
+            [Op.gt]: new Date().toLocaleDateString("en-CA"),
+          },
           completed: false,
         },
-        order: [["dueDate", "ASC"]],
+        order: [["id", "ASC"]],
       });
-
-      const completedItems = await Todo.findAll({
+    }
+    static completedItems() {
+      return this.findAll({
         where: {
           completed: true,
         },
-        order: [["dueDate", "ASC"]],
+        order: [["id", "ASC"]],
       });
-
-      return { overdue, dueToday, dueLater, completedItems };
     }
-
-    // Removes a Todo by ID
     static async remove(id) {
-      return await Todo.destroy({ where: { id } });
+      return this.destroy({
+        where: {
+          id,
+        },
+      });
     }
-
-    // Updates a Todo item with the provided fields
-    static async updateTodo(id, updatedFields) {
-      return await Todo.update(updatedFields, { where: { id } });
-    }
-
-    // Updates the completion status of a Todo item
-    static async setCompletionStatus(id, completed) {
-      if (typeof completed !== 'boolean') {
-        throw new Error('Completed status must be a boolean');
-      }
-      return await Todo.update(
-        { completed },
-        { where: { id } }
-      );
+    setCompletionStatus(bool) {
+      return this.update({ completed: bool });
     }
   }
 
-  // Initialize the Todo model with validations and default values
   Todo.init(
     {
-      title: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
-      },
-      dueDate: {
-        type: DataTypes.DATEONLY,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
-      },
-      completed: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false, // Default to false (incomplete)
-      },
+      title: DataTypes.STRING,
+      dueDate: DataTypes.DATEONLY,
+      completed: DataTypes.BOOLEAN,
     },
     {
       sequelize,
       modelName: "Todo",
     }
   );
-
   return Todo;
 };
