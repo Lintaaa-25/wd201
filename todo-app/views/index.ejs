@@ -31,7 +31,7 @@
               <label for="todo-<%= todo.id %>">
                 <input type="checkbox" id="todo-<%= todo.id %>" 
                   <%= todo.completed ? 'checked' : '' %> 
-                  onchange="updateTodo(<%= todo.id %>)" />
+                  onchange="updateTodo(<%= todo.id %>, <%= todo.completed %>)" />
                 <%= todo.title %> - <%= todo.dueDate %>
               </label>
             </td>
@@ -116,20 +116,13 @@
   <%- include('footer') %>
 
   <script>
-   function updateTodo(id) {
-  fetch(`/todos/${id}/toggle`, {
+   async function updateTodo(id) {
+   await fetch(`/todos/${id}/toggle`, {
     method: "PUT",
-  })
-  .then((res) => {
-    if (res.ok) {
+  });
+  
       window.location.reload();
-    } else {
-      console.error("Failed to toggle todo status");
-    }
-  })
-  .catch((err) => console.error("Error toggling todo:", err));
-}
-
+    } 
     async function deleteTodo(id) {
       await fetch(`/todos/${id}`, {
         method: "DELETE",
