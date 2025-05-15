@@ -1,25 +1,24 @@
-
-<ul class="list-none">
-  <% for (var i = 0; i < data.length; i++) { %>
+<!-- Incomplete Todos Section -->
+<h2 class="text-lg font-semibold mb-2">Incomplete Todos</h2>
+<ul class="list-none mb-6">
+  <% data.forEach((todo) => { if (!todo.completed) { %>
     <li class="Todo-Item">
       <div class="flex items-center w-full my-2 px-2 py-1 rounded hover:bg-purple-50">
         <input 
-          id="todo-checkbox-<%= data[i].id %>" 
+          id="todo-checkbox-<%= todo.id %>" 
           type="checkbox" 
-          <%=data[i].completed ? "checked" : "" %> 
-          onchange="updateTodo(<%= data[i].id %>)" 
+          onchange="updateTodo(<%= todo.id %>)" 
           class="w-4 h-4"
         />
         <label 
-          for="todo-checkbox-<%= data[i].id %>" 
+          for="todo-checkbox-<%= todo.id %>" 
           class="ml-2 text-sm text-gray-600 cursor-pointer"
         >
-          <%= data[i].title %>
+          <%= todo.title %>
         </label>
-
         <a 
           href="javascript:void(0);" 
-          onclick="deleteTodo(<%= data[i].id %>)" 
+          onclick="deleteTodo(<%= todo.id %>)" 
           class="hidden trash-icon ml-2"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -28,5 +27,39 @@
         </a>
       </div>
     </li>
-  <% } %>
+  <% } }); %>
 </ul>
+
+<!-- Completed Todos Section -->
+<h2 class="text-lg font-semibold mb-2">Completed Todos</h2>
+<ul class="list-none">
+  <% data.forEach((todo) => { if (todo.completed) { %>
+    <li class="Todo-Item">
+      <div class="flex items-center w-full my-2 px-2 py-1 rounded hover:bg-purple-50">
+        <input 
+          id="todo-checkbox-<%= todo.id %>" 
+          type="checkbox" 
+          checked 
+          onchange="updateTodo(<%= todo.id %>)" 
+          class="w-4 h-4"
+        />
+        <label 
+          for="todo-checkbox-<%= todo.id %>" 
+          class="ml-2 text-sm text-gray-400 line-through cursor-pointer"
+        >
+          <%= todo.title %>
+        </label>
+        <a 
+          href="javascript:void(0);" 
+          onclick="deleteTodo(<%= todo.id %>)" 
+          class="hidden trash-icon ml-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0l-.346-9m9.708-3.75H5.25m16.5 0a2.25 2.25 0 01-2.25 2.25h-13.5a2.25 2.25 0 01-2.25-2.25m16.5 0V5.25A2.25 2.25 0 0018.75 3h-13.5a2.25 2.25 0 00-2.25 2.25v.75" />
+          </svg>
+        </a>
+      </div>
+    </li>
+  <% } }); %>
+</ul>
+
