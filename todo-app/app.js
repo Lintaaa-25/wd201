@@ -7,9 +7,9 @@ const cookieParser = require("cookie-parser");
 const csrf = require("tiny-csrf");
 const secret = "e34f8c1f5b5d8f7b3947a2f013529fd5";
 
+app.use(cookieParser(secret));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cookieParser(secret));
 app.use(csrf(secret));
 app.use(express.static(path.join(__dirname, "public")));
 
