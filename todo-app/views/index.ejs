@@ -128,21 +128,7 @@
       window.location.reload(); // Reload the page to reflect changes
     }
 
-    async function toggleCompleted(id) {
-  const checkbox = document.getElementById(`todo-${id}`);
-  const completed = checkbox.checked;
-
-  await fetch(`/todos/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      completed: completed,
-    }),
-  });
-  window.location.reload();
-}
+    
 
   </script>
 
