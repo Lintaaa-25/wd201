@@ -3,15 +3,6 @@ const { Model, Op } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
-    // Instance method to mark a todo as completed
-    markAsCompleted() {
-      return this.update({ completed: true });
-    }
-
-    // Instance method to mark a todo as incompleted
-    markAsIncompleted() {
-      return this.update({ completed: false });
-    }
     // Adds a new Todo item
     static async addTodo({ title, dueDate }) {
       if (!title || !dueDate) throw new Error("Title and DueDate are required");
@@ -77,7 +68,6 @@ module.exports = (sequelize, DataTypes) => {
       );
     }
   }
-
 
   // Initialize the Todo model with validations and default values
   Todo.init(
