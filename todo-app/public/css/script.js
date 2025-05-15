@@ -1,6 +1,6 @@
 async function updateTodo(id, currentCompleted) {
   try {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').content; // Retrieve the token
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content; 
 
     const response = await fetch(`/todos/${id}/toggle`, {
       method: "PUT",
