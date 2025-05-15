@@ -115,22 +115,24 @@
   <%- include('footer') %>
 
   <script>
-    function updateTodo(id) {
-      fetch(`/todos/${id}/toggle`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        if (res.ok) {
-          window.location.reload();
-        } else {
-          console.error("Failed to toggle todo status");
-        }
-      })
-      .catch((err) => console.error("Error toggling todo:", err));
+    const CSRF_TOKEN = "<%= csrfToken %>";
+   function updateTodo(id) {
+  fetch(`/todos/${id}/toggle`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRF-Token": CSRF_TOKEN, // ✅ send CSRF token here
+    },
+  })
+  .then((res) => {
+    if (res.ok) {
+      window.location.reload();
+    } else {
+      console.error("Failed to toggle todo status");
     }
+  })
+  .catch((err) => console.error("Error toggling todo:", err));
+}
 
     async function deleteTodo(id) {
       await fetch(`/todos/${id}`, {
