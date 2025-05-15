@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser(secret));
 app.use(csrf(secret));
-app.use(express.static(path.join(\_\_dirname, "public")));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
 
