@@ -1,6 +1,6 @@
 async function updateTodo(id) {
   const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-  await fetch(/todos/${id}, {
+  await fetch(`/todos/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -12,7 +12,7 @@ async function updateTodo(id) {
 
 async function deleteTodo(id) {
   const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-  await fetch(/todos/${id}, {
+  await fetch(`/todos/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -22,7 +22,7 @@ async function deleteTodo(id) {
   window.location.reload();
 }
 async function toggleTodo(id, completed) {
-    await fetch(/todos/${id}, {
+    await fetch(`/todos/${id}`, {
       method: "PUT",
       headers: {
       "Content-Type": "application/json",
