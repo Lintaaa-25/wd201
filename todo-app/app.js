@@ -53,7 +53,7 @@ app.put("/todos/:id/toggle", async (req, res) => {
     await todo.save(); // Save to DB
     return res.json(todo); // Send updated todo
   } catch (err) {
-    console.error(err);
+    console.error("Toggle error:", err.message, err.stack);
     return res.status(500).json({ error: "Something went wrong" });
   }
 });
