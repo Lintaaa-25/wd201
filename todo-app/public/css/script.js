@@ -1,11 +1,14 @@
 async function updateTodo(id, currentCompleted) {
   try {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content; // Retrieve the token
+
     const response = await fetch(`/todos/${id}/toggle`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken, // Include the CSRF token in the headers
       },
-      body: JSON.stringify({ completed: !currentCompleted }), // Send the toggled status
+      body: JSON.stringify({ completed: !currentCompleted }),
     });
 
     if (!response.ok) {
@@ -15,7 +18,7 @@ async function updateTodo(id, currentCompleted) {
 
     const updatedTodo = await response.json();
     console.log("Todo updated:", updatedTodo);
-    window.location.reload(); // Reload to reflect the change
+    window.location.reload();
   } catch (err) {
     console.error("Error toggling todo:", err);
   }
