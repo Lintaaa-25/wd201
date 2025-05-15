@@ -43,6 +43,7 @@ app.post("/todos", async (req, res) => {
     res.status(422).send(err.message);
   }
 });
+
 app.put("/todos/:id/toggle", async (req, res) => {
   try {
     console.log("Toggle request received for ID:", req.params.id);
@@ -53,10 +54,12 @@ app.put("/todos/:id/toggle", async (req, res) => {
       return res.status(404).json({ error: "Todo not found" });
     }
 
-    todo.completed = !todo.completed;
-    await todo.save();
+    // Toggle completed
+    const updated = !todo.completed;
+    await Todo.setCompletionStatus(todo.id, updated);
+    await todo.reload(); // Refresh the instance with latest DB state
 
-    console.log("Todo updated successfully:", todo);
+    console.log("Todo updated:", todo.toJSON());
     return res.json(todo);
   } catch (err) {
     console.error("Toggle error:", err.message, err.stack);
