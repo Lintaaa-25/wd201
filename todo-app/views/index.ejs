@@ -119,10 +119,6 @@
    function updateTodo(id) {
   fetch(`/todos/${id}/toggle`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRF-Token": CSRF_TOKEN, // ✅ send CSRF token here
-    },
   })
   .then((res) => {
     if (res.ok) {
