@@ -44,19 +44,17 @@ app.post("/todos", async (req, res) => {
   }
 });
 
-app.put("/todos/:id/markAsCompleted",async(req,res) => {
-  console.log("We have to update a todo with ID:",req.params.id);
-  const todo = await Todo.findByPk(req.params.id);
+app.put("/todos/:id/toggle", async (req, res) => {
   try {
-    const updatedTodo =await todo.markAsCompleted();
-    return res.json(updatedTodo);
+    const todo = await Todo.findByPk(req.params.id);
+    todo.completed = !todo.completed; // toggle completed status
+    await todo.save();
+    return res.json(todo);
   } catch (err) {
-    console.log(error);
+    console.error(err);
     return res.status(422).json(err);
   }
 });
-
-
 
 app.delete("/todos/:id", async (req, res) => {
   try {
