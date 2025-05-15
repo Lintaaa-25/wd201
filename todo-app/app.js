@@ -47,12 +47,14 @@ app.post("/todos", async (req, res) => {
 app.put("/todos/:id/toggle", async (req, res) => {
   try {
     const todo = await Todo.findByPk(req.params.id);
-    todo.completed = !todo.completed; // toggle completed status
-    await todo.save();
-    return res.json(todo);
+    if (!todo) return res.status(404).json({ error: "Todo not found" });
+
+    todo.completed = !todo.completed; // Toggle
+    await todo.save(); // Save to DB
+    return res.json(todo); // Send updated todo
   } catch (err) {
     console.error(err);
-    return res.status(422).json(err);
+    return res.status(500).json({ error: "Something went wrong" });
   }
 });
 
