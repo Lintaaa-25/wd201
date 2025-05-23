@@ -17,9 +17,9 @@ module.exports = (sequelize, DataTypes) => {
       return this.create({title: title, dueDate: dueDate, completed: false,userId});
     }
 
-    static getTodos(){
-      return this.findAll();
-    }
+    static getTodos(userId){
+  return this.findAll({ where: { userId } });
+}
 
     static async overdue(userId) {
       return await Todo.findAll({
