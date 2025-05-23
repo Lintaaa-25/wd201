@@ -1,3 +1,3 @@
 
-migrations/
-models/
+migrations
+models
