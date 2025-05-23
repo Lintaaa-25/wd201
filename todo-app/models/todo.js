@@ -22,36 +22,37 @@ module.exports = (sequelize, DataTypes) => {
 }
 
     static async overdue(userId) {
-      return await Todo.findAll({
-        where: {
-          dueDate: { [Op.lt]: new Date().toLocaleDateString("en-CA") },
-          completed: false,
-          userId,
-        },
-      });
-    }
+  const today = new Date().toISOString().split("T")[0];
+  return await Todo.findAll({
+    where: {
+      dueDate: { [Op.lt]: today },
+      completed: false,
+      userId,
+    },
+  });
+}
 
-    static async dueToday(userId) {
-      
-      return await Todo.findAll({
-        where: {
-          dueDate: { [Op.eq]: new Date().toLocaleDateString("en-CA") },
-          completed: false,
-          userId,
-        },
-      });
-    }
+   static async dueToday(userId) {
+  const today = new Date().toISOString().split("T")[0];
+  return await Todo.findAll({
+    where: {
+      dueDate: { [Op.eq]: today },
+      completed: false,
+      userId,
+    },
+  });
+} 
 
-    static async dueLater(userId) {
-      
-      return await Todo.findAll({
-        where: {
-          dueDate: { [Op.gt]: new Date().toLocaleDateString("en-CA") },
-          completed: false,
-          userId,
-        },
-      });
-    }
+   static async dueLater(userId) {
+  const today = new Date().toISOString().split("T")[0];
+  return await Todo.findAll({
+    where: {
+      dueDate: { [Op.gt]: today },
+      completed: false,
+      userId,
+    },
+  });
+}
 
     static async remove(id) {
       return this.destroy({
