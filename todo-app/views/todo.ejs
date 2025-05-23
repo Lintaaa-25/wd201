@@ -1,9 +1,22 @@
 
 <div>
-    <h5 class="text-black inline">
-  <%= title %>
-</h5>
-[<span id="<%= title === 'Overdue' ? 'count-overdue' : title === 'Due Today' ? 'count-due-today' : title === 'Due Later' ? 'count-due-later' : 'count-completed' %>"><%= data.length %></span>]
+  <h5 class="text-black inline">
+    <%= title %>
+  </h5>
+  <% 
+    let id = "";
+    if (title === "Overdue") {
+      id = "count-overdue";
+    } else if (title === "Due Today") {
+      id = "count-due-today";
+    } else if (title === "Due Later") {
+      id = "count-due-later";
+    } else if (title === "Completed Items") {
+      id = "count-completed";
+    }
+  %>
+  [<span id="<%= id %>"><%= data.length %></span>]
+    
     <ul class="list-none">
       <% for (let i = 0; i < data.length; i++) { 
         const items = data[i];    
