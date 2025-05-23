@@ -1,3 +1,4 @@
+
 /* eslint-disable no-undef */
 const request = require("supertest");
 var cheerio = require("cheerio");
@@ -10,6 +11,7 @@ function extractCsrfToken(res) {
   var $ = cheerio.load(res.text);
   return $("[name=_csrf]").val();
 }
+
 
 describe("Todo test suite ", () => {
   beforeAll(async () => {
@@ -70,6 +72,7 @@ describe("Todo test suite ", () => {
       _csrf: csrfToken,
     });
 
+    
     const gropuedTodosResponse = await agent
       .get("/")
       .set("Accept", "application/json");
