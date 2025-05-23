@@ -128,7 +128,7 @@ app.get('/todos',connectEnsureLogin.ensureLoggedIn(), async (request, response)=
       csrfToken: request.csrfToken(),
     });
   } else {
-    response.json({all_Todos, over_due, due_Today, due_Later});
+    response.json({all_Todos, over_due, due_Today, due_Later, completed_Items});
   }
 });
 app.use(express.static(path.join(__dirname, 'public')));
